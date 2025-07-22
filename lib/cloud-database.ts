@@ -1,4 +1,4 @@
-import { supabase, pool } from './supabase'
+import { pool } from './database'
 import { randomUUID } from 'crypto'
 import bcrypt from 'bcryptjs'
 import type { 
@@ -11,59 +11,65 @@ import type {
 
 class CloudDatabase {
   constructor() {
-    console.log('🌐 Initializing Cloud Database (Supabase)...')
+    console.log('🌐 Initializing Cloud Database (Neon)...')
     this.initializeProductionData().catch(console.error)
   }
 
   private async initializeProductionData() {
     try {
       // Check if any admin users exist
-      const { count } = await supabase
-        .from('users')
-        .select('*', { count: 'exact', head: true })
-        .eq('role', 'admin')
+      const { rows: [{ count }] } = await pool.query(
+        'SELECT COUNT(*) FROM users WHERE role = $1',
+        ['admin']
+      )
 
-      if (count === 0) {
+      if (parseInt(count) === 0) {
         console.log('Creating initial admin user for production...')
         
         // Hash default admin password
         const adminPassword = await bcrypt.hash('admin123', 12)
 
         // Insert initial admin user
-        const { error: adminError } = await supabase
-          .from('users')
-          .insert({
-            id: randomUUID(),
-            email: 'admin@my.jcu.edu.au',
-            password_hash: adminPassword,
-            first_name: 'System',
-            last_name: 'Administrator',
-            student_id: 'JC000001',
-            role: 'admin',
-            membership_type: 'premium',
-            status: 'approved',
-            phone: '+65 6576 7000',
-            emergency_contact_name: 'JCU IT Support',
-            emergency_contact_phone: '+65 6576 7000',
-            emergency_contact_relationship: 'Institution',
-            approval_date: new Date().toISOString(),
-            expiry_date: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-            points: 0,
-            streak: 0,
-            total_workouts: 0,
-            payment_status: 'paid',
-            payment_method: 'waived',
-            payment_amount: 0,
-            payment_date: new Date().toISOString(),
-            payment_reference: 'ADMIN_SYSTEM',
-            billing_address: 'JCU Campus'
-          })
+        await pool.query(`
+          INSERT INTO users (
+            id, email, password_hash, first_name, last_name, student_id,
+            role, membership_type, status, phone, emergency_contact_name,
+            emergency_contact_phone, emergency_contact_relationship,
+            approval_date, expiry_date, points, streak, total_workouts,
+            payment_status, payment_method, payment_amount, payment_date,
+            payment_reference, billing_address
+          ) VALUES (
+            $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13,
+            $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24
+          )
+        `, [
+          randomUUID(),
+          'admin@my.jcu.edu.au',
+          adminPassword,
+          'System',
+          'Administrator',
+          'JC000001',
+          'admin',
+          'premium',
+          'approved',
+          '+65 6576 7000',
+          'JCU IT Support',
+          '+65 6576 7000',
+          'Institution',
+          new Date().toISOString(),
+          new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+          0,
+          0,
+          0,
+          'paid',
+          'waived',
+          0,
+          new Date().toISOString(),
+          'ADMIN_SYSTEM',
+          'JCU Campus'
+        ])
 
-        if (adminError) {
-          console.error('Error creating admin user:', adminError)
-        } else {
-          console.log('✅ Initial admin user created')
-        }
+        console.log('✅ Initial admin user created')
 
         // Create demo student accounts
         await this.createDemoStudents()
@@ -79,53 +85,58 @@ class CloudDatabase {
 
   private async createDemoStudents() {
     // Check if demo students already exist
-    const { data: existingDemo } = await supabase
-      .from('users')
-      .select('id')
-      .eq('email', 'demo@my.jcu.edu.au')
-      .single()
+    const { rows: [{ count }] } = await pool.query(
+      'SELECT COUNT(*) FROM users WHERE email = $1',
+      ['demo@my.jcu.edu.au']
+    )
 
-    if (!existingDemo) {
+    if (parseInt(count) === 0) {
       console.log('Creating demo student accounts...')
       
       try {
         const demoPassword = await bcrypt.hash('demo123', 12)
 
         // Demo Student 1 - Basic account
-        const { error: demoError } = await supabase
-          .from('users')
-          .insert({
-            id: randomUUID(),
-            email: 'demo@my.jcu.edu.au',
-            password_hash: demoPassword,
-            first_name: 'Demo',
-            last_name: 'Student',
-            student_id: 'JC142001',
-            role: 'student',
-            membership_type: '1-trimester',
-            status: 'approved',
-            phone: '+65 91234567',
-            emergency_contact_name: 'Demo Parent',
-            emergency_contact_phone: '+65 98765432',
-            emergency_contact_relationship: 'Parent',
-            approval_date: new Date().toISOString(),
-            expiry_date: new Date(Date.now() + 120 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 4 months
-            points: 100,
-            streak: 5,
-            total_workouts: 8,
-            payment_status: 'paid',
-            payment_method: 'credit_card',
-            payment_amount: 150,
-            payment_date: new Date().toISOString(),
-            payment_reference: 'PAY_DEMO001',
-            billing_address: '123 Demo Street, Singapore'
-          })
+        await pool.query(`
+          INSERT INTO users (
+            id, email, password_hash, first_name, last_name, student_id,
+            role, membership_type, status, phone, emergency_contact_name,
+            emergency_contact_phone, emergency_contact_relationship,
+            approval_date, expiry_date, points, streak, total_workouts,
+            payment_status, payment_method, payment_amount, payment_date,
+            payment_reference, billing_address
+          ) VALUES (
+            $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13,
+            $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24
+          )
+        `, [
+          randomUUID(),
+          'demo@my.jcu.edu.au',
+          demoPassword,
+          'Demo',
+          'Student',
+          'JC142001',
+          'student',
+          '1-trimester',
+          'approved',
+          '+65 91234567',
+          'Demo Parent',
+          '+65 98765432',
+          'Parent',
+          new Date().toISOString(),
+          new Date(Date.now() + 120 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 4 months
+          100,
+          5,
+          8,
+          'paid',
+          'credit_card',
+          150,
+          new Date().toISOString(),
+          'PAY_DEMO001',
+          '123 Demo Street, Singapore'
+        ])
 
-        if (demoError) {
-          console.error('Error creating demo student:', demoError)
-        } else {
-          console.log('✅ Demo student created')
-        }
+        console.log('✅ Demo student created')
       } catch (error) {
         console.error('Error creating demo students:', error)
       }
@@ -252,22 +263,42 @@ class CloudDatabase {
   }
 
   async updateUser(id: string, updates: any): Promise<any> {
-    const { data, error } = await supabase
-      .from('users')
-      .update({
-        ...updates,
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', id)
-      .select()
-      .single()
+    try {
+      // Build dynamic update query
+      const updateFields = []
+      const values = []
+      let paramCount = 1
 
-    if (error) {
+      for (const [key, value] of Object.entries(updates)) {
+        updateFields.push(`${key} = $${paramCount}`)
+        values.push(value)
+        paramCount++
+      }
+
+      // Always update the updated_at field
+      updateFields.push(`updated_at = NOW()`)
+
+      const query = `
+        UPDATE users 
+        SET ${updateFields.join(', ')}
+        WHERE id = $${paramCount}
+        RETURNING *
+      `
+      
+      values.push(id)
+      
+      const result = await pool.query(query, values)
+      
+      if (result.rows.length === 0) {
+        throw new Error('User not found')
+      }
+      
+      console.log(`✅ User updated successfully: ${id}`)
+      return result.rows[0]
+    } catch (error) {
       console.error('Error updating user:', error)
       throw error
     }
-
-    return data
   }
 
   // Session methods
@@ -485,25 +516,25 @@ class CloudDatabase {
   }
 
   async getSessionBookings(sessionId: string): Promise<Booking[]> {
-    const { data, error } = await supabase
-      .from('bookings')
-      .select(`
-        *,
-        users (
-          id,
-          first_name,
-          last_name,
-          email
-        )
-      `)
-      .eq('session_id', sessionId)
-
-    if (error) {
-      console.error('Error fetching session bookings:', error)
+    try {
+      const result = await pool.query(`
+        SELECT 
+          b.*,
+          u.id as user_id,
+          u.first_name,
+          u.last_name,
+          u.email
+        FROM bookings b
+        LEFT JOIN users u ON b.user_id = u.id
+        WHERE b.session_id = $1
+        ORDER BY b.booking_date DESC
+      `, [sessionId])
+      
+      return result.rows as Booking[]
+    } catch (error) {
+      console.error('Error fetching session bookings:', error instanceof Error ? error.message : String(error))
       return []
     }
-
-    return data as Booking[]
   }
 
   async updateSessionBookingCount(sessionId: string, increment: number): Promise<void> {

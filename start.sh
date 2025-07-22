@@ -35,12 +35,11 @@ fi
 if [ ! -f ".env.local" ]; then
     echo "[INFO] Creating .env.local file..."
     cat > .env.local << EOL
-DATABASE_URL=postgresql://postgres:Ko20l6ckCcOppeYM@db.trujadxwiwawipjkbduc.supabase.co:5432/postgres
-NEXT_PUBLIC_SUPABASE_URL=https://trujadxwiwawipjkbduc.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
+DATABASE_URL=postgres://[USER]:[PASSWORD]@[HOST]/[DATABASE]?sslmode=require
 JWT_SECRET=jcu-gym-management-jwt-secret-change-in-production
 EOL
     echo "[OK] Created .env.local file"
+    echo "[INFO] Please update DATABASE_URL in .env.local with your Neon credentials"
 fi
 
 # Start the server
