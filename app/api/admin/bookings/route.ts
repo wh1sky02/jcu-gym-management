@@ -108,30 +108,37 @@ export async function PUT(request: NextRequest) {
 
     const updateFields = []
     const params = []
+    let paramCount = 1
 
     if (updates.status !== undefined) {
-      updateFields.push('status = ?')
+      updateFields.push(`status = $${paramCount}`)
       params.push(updates.status)
+      paramCount++
     }
     if (updates.checkInTime !== undefined) {
-      updateFields.push('check_in_time = ?')
+      updateFields.push(`check_in_time = $${paramCount}`)
       params.push(updates.checkInTime)
+      paramCount++
     }
     if (updates.checkOutTime !== undefined) {
-      updateFields.push('check_out_time = ?')
+      updateFields.push(`check_out_time = $${paramCount}`)
       params.push(updates.checkOutTime)
+      paramCount++
     }
     if (updates.notes !== undefined) {
-      updateFields.push('notes = ?')
+      updateFields.push(`notes = $${paramCount}`)
       params.push(updates.notes)
+      paramCount++
     }
     if (updates.rating !== undefined) {
-      updateFields.push('rating = ?')
+      updateFields.push(`rating = $${paramCount}`)
       params.push(updates.rating)
+      paramCount++
     }
     if (updates.feedback !== undefined) {
-      updateFields.push('feedback = ?')
+      updateFields.push(`feedback = $${paramCount}`)
       params.push(updates.feedback)
+      paramCount++
     }
 
     if (updateFields.length === 0) {
@@ -142,28 +149,24 @@ export async function PUT(request: NextRequest) {
     }
 
     updateFields.push('updated_at = CURRENT_TIMESTAMP')
+    
+    // Build the final query with correct parameter numbering
+    let query = `UPDATE bookings SET ${updateFields.join(', ')} WHERE id = $${paramCount}`
     params.push(bookingId)
 
-    const stmt = (db as any).db.prepare(`
-      UPDATE bookings 
-      SET ${updateFields.join(', ')}
-      WHERE id = ?
-    `)
-
-    stmt.run(...params)
+    await db.executeQuery(query, params)
 
     // If cancelling a booking, update session capacity
     if (updates.status === 'cancelled') {
-      const bookingStmt = (db as any).db.prepare('SELECT session_id FROM bookings WHERE id = ?')
-      const booking = bookingStmt.get(bookingId)
+      const bookingResult = await db.executeQuery('SELECT session_id FROM bookings WHERE id = $1', [bookingId])
       
-      if (booking) {
-        const sessionStmt = (db as any).db.prepare(`
+      if (bookingResult.length > 0) {
+        const sessionId = bookingResult[0].session_id
+        await db.executeQuery(`
           UPDATE gym_sessions 
           SET current_bookings = current_bookings - 1
-          WHERE id = ?
-        `)
-        sessionStmt.run(booking.session_id)
+          WHERE id = $1
+        `, [sessionId])
       }
     }
 

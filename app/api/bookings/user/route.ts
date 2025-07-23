@@ -66,10 +66,11 @@ export async function GET(request: NextRequest) {
       createdAt: booking.created_at,
       session: {
         id: booking.session_id,
-        date: booking.date,
+        date: booking.session_date,
         startTime: booking.start_time,
         endTime: booking.end_time,
         type: booking.type,
+        instructor: booking.instructor,
         description: booking.description
       }
     }))

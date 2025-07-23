@@ -82,8 +82,11 @@ export async function PUT(request: NextRequest) {
       }
 
       // Check if email already exists
-      const existingUser = db.getUserByEmail(newEmail)
-      if (existingUser && (existingUser as any).id !== decoded.userId) {
+      const existingUser = await db.executeQuery(
+        'SELECT id FROM users WHERE email = $1 AND id != $2',
+        [newEmail, decoded.userId]
+      )
+      if (existingUser.length > 0) {
         return NextResponse.json(
           { error: "Email already in use" },
           { status: 400 }
@@ -91,12 +94,11 @@ export async function PUT(request: NextRequest) {
       }
 
       // Update email
-      const updateStmt = (db as any).db.prepare(`
+      await db.executeQuery(`
         UPDATE users 
-        SET email = ?, updated_at = CURRENT_TIMESTAMP
-        WHERE id = ?
-      `)
-      updateStmt.run(newEmail, decoded.userId)
+        SET email = $1, updated_at = CURRENT_TIMESTAMP
+        WHERE id = $2
+      `, [newEmail, decoded.userId])
 
       return NextResponse.json({ 
         success: true, 
@@ -123,12 +125,11 @@ export async function PUT(request: NextRequest) {
       const hashedPassword = await bcrypt.hash(newPassword, 12)
 
       // Update password
-      const updateStmt = (db as any).db.prepare(`
+      await db.executeQuery(`
         UPDATE users 
-        SET password_hash = ?, updated_at = CURRENT_TIMESTAMP
-        WHERE id = ?
-      `)
-      updateStmt.run(hashedPassword, decoded.userId)
+        SET password_hash = $1, updated_at = CURRENT_TIMESTAMP
+        WHERE id = $2
+      `, [hashedPassword, decoded.userId])
 
       return NextResponse.json({ 
         success: true, 

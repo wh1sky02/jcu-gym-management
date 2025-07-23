@@ -6,10 +6,24 @@ const JWT_SECRET = process.env.JWT_SECRET || "jcu-gym-secret-key-change-in-produ
 
 export async function GET(request: NextRequest) {
   try {
-    // Check for auth token in cookie
+    // Check for auth token in multiple places:
+    // 1. Authorization header (for localStorage-based auth)
+    // 2. Cookie (for cookie-based auth)
+    const authHeader = request.headers.get('Authorization')
     const cookieToken = request.cookies.get('auth-token')?.value
     
-    if (!cookieToken) {
+    let token = null
+    
+    // Try Authorization header first (Bearer token)
+    if (authHeader?.startsWith('Bearer ')) {
+      token = authHeader.split(' ')[1]
+    }
+    // Fall back to cookie
+    else if (cookieToken) {
+      token = cookieToken
+    }
+    
+    if (!token) {
       return NextResponse.json(
         { error: "Not authenticated" },
         { status: 401 }
@@ -17,7 +31,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Verify JWT token
-    const decoded = jwt.verify(cookieToken, JWT_SECRET) as any
+    const decoded = jwt.verify(token, JWT_SECRET) as any
     const userId = decoded.userId
 
     // Get user from database

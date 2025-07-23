@@ -1,5 +1,5 @@
--- JCU Gym Management System - Supabase Database Schema
--- This file contains the complete database schema for the cloud database
+-- JCU Gym Management System - Neon Database Schema
+-- This file contains the complete database schema for the Neon cloud database
 
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
@@ -204,88 +204,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Row Level Security (RLS) policies
-ALTER TABLE users ENABLE ROW LEVEL SECURITY;
-ALTER TABLE gym_sessions ENABLE ROW LEVEL SECURITY;
-ALTER TABLE bookings ENABLE ROW LEVEL SECURITY;
-ALTER TABLE user_achievements ENABLE ROW LEVEL SECURITY;
-ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
-ALTER TABLE billing_transactions ENABLE ROW LEVEL SECURITY;
-
--- Users policies
-CREATE POLICY "Users can view their own data" ON users
-    FOR SELECT USING (auth.uid()::text = id::text);
-
-CREATE POLICY "Admins can view all users" ON users
-    FOR ALL USING (
-        EXISTS (
-            SELECT 1 FROM users 
-            WHERE id = auth.uid()::uuid 
-            AND role = 'admin'
-        )
-    );
-
--- Gym sessions policies
-CREATE POLICY "Anyone can view active sessions" ON gym_sessions
-    FOR SELECT USING (is_active = true);
-
-CREATE POLICY "Admins can manage sessions" ON gym_sessions
-    FOR ALL USING (
-        EXISTS (
-            SELECT 1 FROM users 
-            WHERE id = auth.uid()::uuid 
-            AND role = 'admin'
-        )
-    );
-
--- Bookings policies
-CREATE POLICY "Users can view their own bookings" ON bookings
-    FOR SELECT USING (user_id = auth.uid()::uuid);
-
-CREATE POLICY "Users can create their own bookings" ON bookings
-    FOR INSERT WITH CHECK (user_id = auth.uid()::uuid);
-
-CREATE POLICY "Users can update their own bookings" ON bookings
-    FOR UPDATE USING (user_id = auth.uid()::uuid);
-
-CREATE POLICY "Admins can manage all bookings" ON bookings
-    FOR ALL USING (
-        EXISTS (
-            SELECT 1 FROM users 
-            WHERE id = auth.uid()::uuid 
-            AND role = 'admin'
-        )
-    );
-
--- Notifications policies
-CREATE POLICY "Users can view their notifications" ON notifications
-    FOR SELECT USING (
-        user_id = auth.uid()::uuid 
-        OR user_id IS NULL
-    );
-
-CREATE POLICY "Admins can manage notifications" ON notifications
-    FOR ALL USING (
-        EXISTS (
-            SELECT 1 FROM users 
-            WHERE id = auth.uid()::uuid 
-            AND role = 'admin'
-        )
-    );
-
--- Billing transactions policies
-CREATE POLICY "Users can view their own transactions" ON billing_transactions
-    FOR SELECT USING (user_id = auth.uid()::uuid);
-
-CREATE POLICY "Admins can manage all transactions" ON billing_transactions
-    FOR ALL USING (
-        EXISTS (
-            SELECT 1 FROM users 
-            WHERE id = auth.uid()::uuid 
-            AND role = 'admin'
-        )
-    );
-
 -- Insert initial admin user (if not exists)
 INSERT INTO users (
     id,
@@ -368,7 +286,7 @@ INSERT INTO users (
 ) VALUES (
     '550e8400-e29b-41d4-a716-446655440001',
     'demo@my.jcu.edu.au',
-    '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj/RK.s5u.Ge', -- demo123
+    '$2b$12$hvDHLwVlSsvybklceTO1FeLEJSbXzDfC/Cc3AavPfjNzIOPzM534K', -- demo123
     'Demo',
     'Student',
     'JC142001',

@@ -355,28 +355,6 @@ export default function DashboardPage() {
                   <BookOpen className="mr-2 h-5 w-5" />
                   View Booking History
                 </Button>
-                
-                <div className="pt-4 border-t border-gray-200">
-                  <h4 className="font-semibold text-gray-900 mb-4">Session Types</h4>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="border border-blue-100 rounded-lg p-3 bg-blue-50">
-                      <p className="text-sm font-medium text-blue-900">General</p>
-                      <p className="text-xs text-blue-600">Open access to gym equipment</p>
-                    </div>
-                    <div className="border border-purple-100 rounded-lg p-3 bg-purple-50">
-                      <p className="text-sm font-medium text-purple-900">Cardio</p>
-                      <p className="text-xs text-purple-600">Treadmills and cardio equipment</p>
-                    </div>
-                    <div className="border border-amber-100 rounded-lg p-3 bg-amber-50">
-                      <p className="text-sm font-medium text-amber-900">Weights</p>
-                      <p className="text-xs text-amber-600">Free weights and machines</p>
-                    </div>
-                    <div className="border border-green-100 rounded-lg p-3 bg-green-50">
-                      <p className="text-sm font-medium text-green-900">Circuit</p>
-                      <p className="text-xs text-green-600">Circuit training area</p>
-                    </div>
-                  </div>
-                </div>
               </CardContent>
             </Card>
 
