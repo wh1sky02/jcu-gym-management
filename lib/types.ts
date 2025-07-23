@@ -1,3 +1,7 @@
+// ============================================================================
+// USER RELATED TYPES
+// ============================================================================
+
 export interface User {
   id: string
   email: string
@@ -29,7 +33,6 @@ export interface UserPreferences {
   enableNotifications: boolean
   preferredWorkoutTimes: string[]
   privacySettings: {
-
     showOnLeaderboard: boolean
     allowBuddyRequests: boolean
   }
@@ -42,7 +45,6 @@ export interface NotificationSettings {
   push: boolean
   reminderTimes: number[]
   waitlistUpdates: boolean
-
   announcements: boolean
 }
 
@@ -72,6 +74,10 @@ export interface Payment {
   type: "membership" | "guest-pass"
   description: string
 }
+
+// ============================================================================
+// GYM SESSION AND BOOKING TYPES
+// ============================================================================
 
 export interface GymSession {
   id: string
@@ -126,6 +132,10 @@ export interface Waitlist {
   notificationSent: boolean
 }
 
+// ============================================================================
+// ADMIN AND API TYPES
+// ============================================================================
+
 export interface AdminStats {
   totalUsers: number
   activeUsers: number
@@ -158,6 +168,10 @@ export interface PaginatedResponse<T> {
     totalPages: number
   }
 }
+
+// ============================================================================
+// FORM TYPES
+// ============================================================================
 
 export interface BookingForm {
   sessionId: string

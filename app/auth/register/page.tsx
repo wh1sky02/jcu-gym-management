@@ -12,7 +12,25 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
-import { Dumbbell, CreditCard, DollarSign, Calendar, CheckCircle2, User, Mail, IdCard, Lock, Shield, GraduationCap } from "lucide-react"
+import { 
+  Dumbbell, 
+  CreditCard, 
+  Calendar, 
+  CheckCircle2, 
+  User, 
+  Mail, 
+  IdCard, 
+  Lock, 
+  Shield, 
+  GraduationCap,
+  Eye,
+  EyeOff,
+  Phone,
+  UserCheck,
+  ArrowRight,
+  ArrowLeft,
+  CreditCard as CreditCardIcon
+} from "lucide-react"
 import Link from "next/link"
 
 const MEMBERSHIP_PRICES = {
@@ -24,6 +42,8 @@ const MEMBERSHIP_PRICES = {
 
 export default function RegisterPage() {
   const [currentStep, setCurrentStep] = useState(1)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -285,179 +305,227 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-amber-50 p-4">
-      <div className="container mx-auto max-w-3xl">
-        <Card className="border-2 border-blue-100 shadow-2xl">
-          <CardHeader className="text-center bg-gradient-to-r from-blue-600 to-amber-500 text-white rounded-t-lg">
-            <div className="flex items-center justify-center mb-4">
-              {/* JCU Official Logo */}
-              <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg p-1 mr-3">
-                <svg viewBox="0 0 200 150" className="w-full h-full">
-                  {/* JCU Logo Recreation */}
-                  <defs>
-                    <linearGradient id="sunGradientRegister" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#F59E0B"/>
-                      <stop offset="100%" stopColor="#D97706"/>
-                    </linearGradient>
-                    <linearGradient id="waveGradientRegister" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#2563EB"/>
-                      <stop offset="100%" stopColor="#1D4ED8"/>
-                    </linearGradient>
-                  </defs>
-                  
-                  {/* Sun */}
-                  <circle cx="150" cy="30" r="18" fill="url(#sunGradientRegister)"/>
-                  <path d="M150,5 L155,20 L170,15 L160,25 L175,30 L160,35 L170,45 L155,40 L150,55 L145,40 L130,45 L140,35 L125,30 L140,25 L130,15 L145,20 Z" fill="url(#sunGradientRegister)"/>
-                  
-                  {/* Ocean Waves */}
-                  <path d="M10,60 Q50,45 90,60 T170,60 L170,90 Q130,75 90,90 T10,90 Z" fill="url(#waveGradientRegister)"/>
-                  <path d="M10,80 Q50,65 90,80 T170,80 L170,110 Q130,95 90,110 T10,110 Z" fill="url(#waveGradientRegister)" opacity="0.8"/>
-                  <path d="M10,100 Q50,85 90,100 T170,100 L170,130 Q130,115 90,130 T10,130 Z" fill="url(#waveGradientRegister)" opacity="0.6"/>
-                  
-                  {/* JCU Letters */}
-                  <text x="20" y="45" fontSize="24" fontWeight="bold" fill="#1F2937">JCU</text>
-                </svg>
-              </div>
-              <Dumbbell className="h-10 w-10 mr-3" />
-              <CardTitle className="text-3xl font-bold">JCU Gym Registration</CardTitle>
-            </div>
-            <CardDescription className="text-blue-100 text-lg font-medium">
-              Join James Cook University Fitness Center
-            </CardDescription>
-            
-            {/* Progress Indicator */}
-            <div className="flex justify-center mt-6 space-x-4">
-              {[1, 2, 3].map((step) => (
-                <div key={step} className={`flex items-center ${step < 3 ? 'mr-4' : ''}`}>
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
-                    currentStep >= step ? 'bg-white text-blue-600' : 'bg-blue-400 text-white'
-                  }`}>
-                    {currentStep > step ? <CheckCircle2 className="h-6 w-6" /> : step}
-                  </div>
-                  {step < 3 && <div className={`w-8 h-1 ${currentStep > step ? 'bg-white' : 'bg-blue-400'}`} />}
-                </div>
-              ))}
-            </div>
-            <div className="flex justify-center mt-2 text-sm">
-              <span className="mr-8">Account</span>
-              <span className="mr-8">Membership</span>
-              <span>Payment</span>
-            </div>
-          </CardHeader>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-4xl">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl mb-6 shadow-lg">
+            <GraduationCap className="h-8 w-8 text-white" />
+          </div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">JCU Fitness Center</h1>
+          <p className="text-gray-600">Create your student membership account</p>
+        </div>
 
+        {/* Progress Indicator */}
+        <div className="flex justify-center mb-8">
+          <div className="flex items-center space-x-4">
+            {[
+              { step: 1, label: "Account", icon: User },
+              { step: 2, label: "Membership", icon: Shield },
+              { step: 3, label: "Payment", icon: CreditCardIcon }
+            ].map(({ step, label, icon: Icon }, index) => (
+              <div key={step} className="flex items-center">
+                <div className={`flex flex-col items-center ${index < 2 ? 'mr-8' : ''}`}>
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold transition-all duration-200 ${
+                    currentStep >= step 
+                      ? 'bg-blue-600 text-white shadow-lg' 
+                      : 'bg-gray-200 text-gray-400'
+                  }`}>
+                    {currentStep > step ? (
+                      <CheckCircle2 className="h-6 w-6" />
+                    ) : (
+                      <Icon className="h-6 w-6" />
+                    )}
+                  </div>
+                  <span className={`text-sm mt-2 font-medium ${
+                    currentStep >= step ? 'text-blue-600' : 'text-gray-400'
+                  }`}>
+                    {label}
+                  </span>
+                </div>
+                {index < 2 && (
+                  <div className={`w-16 h-0.5 mb-6 transition-all duration-200 ${
+                    currentStep > step ? 'bg-blue-600' : 'bg-gray-200'
+                  }`} />
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Registration Card */}
+        <Card className="shadow-xl border-0 bg-white">
           <CardContent className="p-8">
             <form onSubmit={handleSubmit} className="space-y-6">
               {error && (
-                <Alert variant="destructive" className="border-red-300">
-                  <AlertDescription className="text-red-800">{error}</AlertDescription>
+                <Alert className="border-red-200 bg-red-50">
+                  <AlertDescription className="text-red-700 text-sm">
+                    {error}
+                  </AlertDescription>
                 </Alert>
               )}
 
               {/* Step 1: Account Information */}
               {currentStep === 1 && (
                 <div className="space-y-6">
-                  <div className="text-center mb-6">
-                    <h3 className="text-2xl font-bold text-gray-800 flex items-center justify-center">
-                      <User className="h-6 w-6 mr-2 text-blue-600" />
-                      Account Information
-                    </h3>
-                    <p className="text-gray-600 mt-2">Enter your personal details</p>
+                  <div className="text-center mb-8">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Account Information</h2>
+                    <p className="text-gray-600">Create your JCU fitness center account</p>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <Label htmlFor="firstName" className="text-lg font-semibold text-gray-700">First Name</Label>
-                      <Input
-                        id="firstName"
-                        value={formData.firstName}
-                        onChange={(e) => updateFormData("firstName", e.target.value)}
-                        className="h-12 text-lg border-2 border-blue-200 focus:border-blue-500"
-                        required
-                      />
+                      <Label htmlFor="firstName" className="text-sm font-medium text-gray-700">
+                        First Name
+                      </Label>
+                      <div className="relative">
+                        <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                        <Input
+                          id="firstName"
+                          value={formData.firstName}
+                          onChange={(e) => updateFormData("firstName", e.target.value)}
+                          className="pl-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500 bg-gray-50 focus:bg-white transition-colors"
+                          placeholder="Enter your first name"
+                          required
+                        />
+                      </div>
                     </div>
+                    
                     <div className="space-y-2">
-                      <Label htmlFor="lastName" className="text-lg font-semibold text-gray-700">Last Name</Label>
-                      <Input
-                        id="lastName"
-                        value={formData.lastName}
-                        onChange={(e) => updateFormData("lastName", e.target.value)}
-                        className="h-12 text-lg border-2 border-blue-200 focus:border-blue-500"
-                        required
-                      />
+                      <Label htmlFor="lastName" className="text-sm font-medium text-gray-700">
+                        Last Name
+                      </Label>
+                      <div className="relative">
+                        <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                        <Input
+                          id="lastName"
+                          value={formData.lastName}
+                          onChange={(e) => updateFormData("lastName", e.target.value)}
+                          className="pl-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500 bg-gray-50 focus:bg-white transition-colors"
+                          placeholder="Enter your last name"
+                          required
+                        />
+                      </div>
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-lg font-semibold text-gray-700 flex items-center">
-                      <Mail className="h-5 w-5 mr-2 text-blue-600" />
+                    <Label htmlFor="email" className="text-sm font-medium text-gray-700">
                       JCU Email Address
                     </Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => updateFormData("email", e.target.value)}
-                      className="h-12 text-lg border-2 border-blue-200 focus:border-blue-500"
-                      required
-                    />
-                    <p className="text-sm text-gray-500">Use your official JCU email address</p>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="phone" className="text-lg font-semibold text-gray-700">
-                      Phone Number (Optional)
-                    </Label>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      value={formData.phone}
-                      onChange={(e) => updateFormData("phone", e.target.value)}
-                      className="h-12 text-lg border-2 border-blue-200 focus:border-blue-500"
-                      placeholder="e.g., +61 400 123 456"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="studentId" className="text-lg font-semibold text-gray-700 flex items-center">
-                      <IdCard className="h-5 w-5 mr-2 text-blue-600" />
-                      Student ID
-                    </Label>
-                    <Input
-                      id="studentId"
-                      placeholder="e.g., 14742770"
-                      value={formData.studentId}
-                      onChange={(e) => updateFormData("studentId", e.target.value)}
-                      className="h-12 text-lg border-2 border-blue-200 focus:border-blue-500"
-                      required
-                    />
-                    <p className="text-sm text-gray-500">Must be 6-10 digits</p>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="password" className="text-lg font-semibold text-gray-700 flex items-center">
-                        <Lock className="h-5 w-5 mr-2 text-blue-600" />
-                        Password
-                      </Label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                       <Input
-                        id="password"
-                        type="password"
-                        value={formData.password}
-                        onChange={(e) => updateFormData("password", e.target.value)}
-                        className="h-12 text-lg border-2 border-blue-200 focus:border-blue-500"
+                        id="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={(e) => updateFormData("email", e.target.value)}
+                        className="pl-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500 bg-gray-50 focus:bg-white transition-colors"
+                        placeholder="your.email@my.jcu.edu.au"
                         required
                       />
                     </div>
+                    <p className="text-xs text-gray-500">Use your official JCU email address</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <Label htmlFor="confirmPassword" className="text-lg font-semibold text-gray-700">Confirm Password</Label>
-                      <Input
-                        id="confirmPassword"
-                        type="password"
-                        value={formData.confirmPassword}
-                        onChange={(e) => updateFormData("confirmPassword", e.target.value)}
-                        className="h-12 text-lg border-2 border-blue-200 focus:border-blue-500"
-                        required
-                      />
+                      <Label htmlFor="studentId" className="text-sm font-medium text-gray-700">
+                        Student ID
+                      </Label>
+                      <div className="relative">
+                        <IdCard className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                        <Input
+                          id="studentId"
+                          value={formData.studentId}
+                          onChange={(e) => updateFormData("studentId", e.target.value)}
+                          className="pl-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500 bg-gray-50 focus:bg-white transition-colors"
+                          placeholder="e.g., 14742770"
+                          required
+                        />
+                      </div>
+                      <p className="text-xs text-gray-500">6-10 digits</p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="phone" className="text-sm font-medium text-gray-700">
+                        Phone Number <span className="text-gray-400">(Optional)</span>
+                      </Label>
+                      <div className="relative">
+                        <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                        <Input
+                          id="phone"
+                          type="tel"
+                          value={formData.phone}
+                          onChange={(e) => updateFormData("phone", e.target.value)}
+                          className="pl-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500 bg-gray-50 focus:bg-white transition-colors"
+                          placeholder="+65 9123 4567"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="password" className="text-sm font-medium text-gray-700">
+                        Password
+                      </Label>
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                        <Input
+                          id="password"
+                          type={showPassword ? "text" : "password"}
+                          value={formData.password}
+                          onChange={(e) => updateFormData("password", e.target.value)}
+                          className="pl-10 pr-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500 bg-gray-50 focus:bg-white transition-colors"
+                          placeholder="Create a password"
+                          required
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="absolute right-1 top-1/2 transform -translate-y-1/2 h-10 w-10 hover:bg-gray-100"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-4 w-4 text-gray-400" />
+                          ) : (
+                            <Eye className="h-4 w-4 text-gray-400" />
+                          )}
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="confirmPassword" className="text-sm font-medium text-gray-700">
+                        Confirm Password
+                      </Label>
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                        <Input
+                          id="confirmPassword"
+                          type={showConfirmPassword ? "text" : "password"}
+                          value={formData.confirmPassword}
+                          onChange={(e) => updateFormData("confirmPassword", e.target.value)}
+                          className="pl-10 pr-10 h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500 bg-gray-50 focus:bg-white transition-colors"
+                          placeholder="Confirm your password"
+                          required
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="absolute right-1 top-1/2 transform -translate-y-1/2 h-10 w-10 hover:bg-gray-100"
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        >
+                          {showConfirmPassword ? (
+                            <EyeOff className="h-4 w-4 text-gray-400" />
+                          ) : (
+                            <Eye className="h-4 w-4 text-gray-400" />
+                          )}
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -466,36 +534,35 @@ export default function RegisterPage() {
               {/* Step 2: Role and Membership Selection */}
               {currentStep === 2 && (
                 <div className="space-y-6">
-                  <div className="text-center mb-6">
-                    <h3 className="text-2xl font-bold text-gray-800 flex items-center justify-center">
-                      <GraduationCap className="h-6 w-6 mr-2 text-blue-600" />
-                      Membership Selection
-                    </h3>
-                    <p className="text-gray-600 mt-2">Choose your role and membership plan</p>
+                  <div className="text-center mb-8">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Membership Selection</h2>
+                    <p className="text-gray-600">Choose your role and membership plan</p>
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-lg font-semibold text-gray-700 flex items-center">
-                      <Shield className="h-5 w-5 mr-2 text-blue-600" />
-                      Role
+                    <Label className="text-sm font-medium text-gray-700">
+                      Your Role at JCU
                     </Label>
-                    <Select onValueChange={(value) => updateFormData("role", value)} value={formData.role}>
-                      <SelectTrigger className="h-12 text-lg border-2 border-blue-200">
-                        <SelectValue placeholder="Select your role" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="student">Student</SelectItem>
-                        <SelectItem value="staff">Staff</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <div className="relative">
+                      <UserCheck className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
+                      <Select onValueChange={(value) => updateFormData("role", value)} value={formData.role}>
+                        <SelectTrigger className="pl-10 h-12 border-gray-200 focus:border-blue-500 bg-gray-50 focus:bg-white transition-colors">
+                          <SelectValue placeholder="Select your role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="student">Student</SelectItem>
+                          <SelectItem value="staff">Staff</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
 
                   <div className="space-y-4">
-                    <Label className="text-lg font-semibold text-gray-700">Membership Type</Label>
+                    <Label className="text-sm font-medium text-gray-700">Available Membership Plans</Label>
                     {!formData.role ? (
-                      <div className="p-8 border-2 border-dashed border-gray-300 rounded-lg text-center">
+                      <div className="p-8 border-2 border-dashed border-gray-200 rounded-xl text-center bg-gray-50">
                         <Shield className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-                        <p className="text-gray-500 text-lg">Please select your role first to see available membership options</p>
+                        <p className="text-gray-500">Please select your role first to see available membership options</p>
                       </div>
                     ) : (
                       <div className="grid gap-4">
@@ -504,28 +571,36 @@ export default function RegisterPage() {
                           if (formData.role === "student" && !["1-trimester", "3-trimester"].includes(type)) return null
                           if (formData.role === "staff" && !["1-year", "premium"].includes(type)) return null
                           
+                          const isSelected = formData.membershipType === type
+                          
                           return (
                             <div
                               key={type}
-                              className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                                formData.membershipType === type
-                                  ? 'border-blue-500 bg-blue-50'
-                                  : 'border-gray-200 hover:border-blue-300'
+                              className={`p-6 border-2 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-lg ${
+                                isSelected
+                                  ? 'border-blue-500 bg-blue-50 shadow-md'
+                                  : 'border-gray-200 hover:border-blue-300 bg-white'
                               }`}
                               onClick={() => updateFormData("membershipType", type)}
                             >
-                              <div className="flex justify-between items-center">
-                                <div>
-                                  <h4 className="font-bold text-lg capitalize">
-                                    {type.replace('-', ' ')} Membership
-                                  </h4>
-                                  <p className="text-gray-600">{details.description}</p>
-                                  <p className="text-sm text-gray-500 mt-1">Duration: {details.duration}</p>
+                              <div className="flex justify-between items-start">
+                                <div className="flex-1">
+                                  <div className="flex items-center mb-2">
+                                    <Dumbbell className={`h-5 w-5 mr-2 ${isSelected ? 'text-blue-600' : 'text-gray-400'}`} />
+                                    <h4 className="font-bold text-lg capitalize text-gray-900">
+                                      {type.replace('-', ' ')} Membership
+                                    </h4>
+                                  </div>
+                                  <p className="text-gray-600 mb-2">{details.description}</p>
+                                  <div className="flex items-center text-sm text-gray-500">
+                                    <Calendar className="h-4 w-4 mr-1" />
+                                    <span>Duration: {details.duration}</span>
+                                  </div>
                                 </div>
-                                <div className="text-right">
-                                  <div className="text-2xl font-bold text-blue-600">S${details.price}</div>
-                                  <Badge variant={formData.membershipType === type ? "default" : "outline"}>
-                                    {formData.membershipType === type ? "Selected" : "Select"}
+                                <div className="text-right ml-6">
+                                  <div className="text-3xl font-bold text-blue-600 mb-2">S${details.price}</div>
+                                  <Badge variant={isSelected ? "default" : "outline"} className={isSelected ? "bg-blue-600" : ""}>
+                                    {isSelected ? "Selected" : "Select"}
                                   </Badge>
                                 </div>
                               </div>
@@ -537,10 +612,15 @@ export default function RegisterPage() {
                   </div>
 
                   {formData.membershipType && (
-                    <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                      <div className="flex items-center text-green-800">
-                        <Calendar className="h-5 w-5 mr-2" />
-                        <span className="font-semibold">Membership expires: {calculateExpiryDate()}</span>
+                    <div className="bg-green-50 p-6 rounded-xl border border-green-200">
+                      <div className="flex items-start">
+                        <CheckCircle2 className="h-6 w-6 text-green-600 mr-3 mt-0.5" />
+                        <div>
+                          <h4 className="font-semibold text-green-800 mb-1">Membership Summary</h4>
+                          <p className="text-green-700 text-sm">
+                            Your membership will expire on <span className="font-medium">{calculateExpiryDate()}</span>
+                          </p>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -550,60 +630,79 @@ export default function RegisterPage() {
               {/* Step 3: Payment Information */}
               {currentStep === 3 && (
                 <div className="space-y-6">
-                  <div className="text-center mb-6">
-                    <h3 className="text-2xl font-bold text-gray-800 flex items-center justify-center">
-                      <CreditCard className="h-6 w-6 mr-2 text-blue-600" />
-                      Payment Information
-                    </h3>
-                    <p className="text-gray-600 mt-2">Complete your membership payment</p>
+                  <div className="text-center mb-8">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Payment Information</h2>
+                    <p className="text-gray-600">Complete your membership payment</p>
                   </div>
 
                   {getSelectedMembershipPrice() && (
-                    <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
+                    <div className="bg-blue-50 p-6 rounded-xl border border-blue-200">
                       <div className="flex justify-between items-center mb-4">
-                        <span className="text-lg font-semibold">
-                          {formData.membershipType?.replace('-', ' ')} Membership
-                        </span>
-                        <span className="text-2xl font-bold text-blue-600">
+                        <div className="flex items-center">
+                          <Dumbbell className="h-5 w-5 text-blue-600 mr-2" />
+                          <span className="text-lg font-semibold text-gray-900">
+                            {formData.membershipType?.replace('-', ' ')} Membership
+                          </span>
+                        </div>
+                        <span className="text-3xl font-bold text-blue-600">
                           S${getSelectedMembershipPrice()?.price}
                         </span>
                       </div>
-                      <div className="text-sm text-gray-600">
-                        <p>Duration: {getSelectedMembershipPrice()?.duration}</p>
-                        <p>Expires: {calculateExpiryDate()}</p>
+                      <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
+                        <div className="flex items-center">
+                          <Calendar className="h-4 w-4 mr-1" />
+                          <span>Duration: {getSelectedMembershipPrice()?.duration}</span>
+                        </div>
+                        <div className="flex items-center">
+                          <CheckCircle2 className="h-4 w-4 mr-1" />
+                          <span>Expires: {calculateExpiryDate()}</span>
+                        </div>
                       </div>
                     </div>
                   )}
 
                   <div className="space-y-2">
-                    <Label className="text-lg font-semibold text-gray-700">Payment Method</Label>
-                    <Select onValueChange={(value) => updateFormData("paymentMethod", value)} value={formData.paymentMethod}>
-                      <SelectTrigger className="h-12 text-lg border-2 border-blue-200">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="credit_card">Credit Card</SelectItem>
-                        <SelectItem value="bank_transfer">Bank Transfer</SelectItem>
-                        <SelectItem value="paypal">PayPal</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <Label className="text-sm font-medium text-gray-700">Payment Method</Label>
+                    <div className="relative">
+                      <CreditCard className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
+                      <Select onValueChange={(value) => updateFormData("paymentMethod", value)} value={formData.paymentMethod}>
+                        <SelectTrigger className="pl-10 h-12 border-gray-200 focus:border-blue-500 bg-gray-50 focus:bg-white transition-colors">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="credit_card">Credit Card</SelectItem>
+                          <SelectItem value="bank_transfer">Bank Transfer</SelectItem>
+                          <SelectItem value="paypal">PayPal</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
 
                   {formData.paymentMethod === "credit_card" && (
-                    <div className="space-y-4">
+                    <div className="space-y-6 p-6 bg-gray-50 rounded-xl border">
+                      <h4 className="font-semibold text-gray-900 flex items-center">
+                        <CreditCard className="h-5 w-5 mr-2 text-blue-600" />
+                        Credit Card Details
+                      </h4>
+                      
                       <div className="space-y-2">
-                        <Label htmlFor="cardHolder" className="text-lg font-semibold text-gray-700">Card Holder Name</Label>
+                        <Label htmlFor="cardHolder" className="text-sm font-medium text-gray-700">
+                          Card Holder Name
+                        </Label>
                         <Input
                           id="cardHolder"
                           value={formData.cardHolder}
                           onChange={(e) => updateFormData("cardHolder", e.target.value)}
-                          className="h-12 text-lg border-2 border-blue-200 focus:border-blue-500"
-                          placeholder="Full name on card"
+                          className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500 bg-white transition-colors"
+                          placeholder="Full name as shown on card"
                           required
                         />
                       </div>
+                      
                       <div className="space-y-2">
-                        <Label htmlFor="cardNumber" className="text-lg font-semibold text-gray-700">Card Number</Label>
+                        <Label htmlFor="cardNumber" className="text-sm font-medium text-gray-700">
+                          Card Number
+                        </Label>
                         <Input
                           id="cardNumber"
                           value={formData.cardNumber}
@@ -611,18 +710,21 @@ export default function RegisterPage() {
                             const formatted = formatCardNumber(e.target.value)
                             updateFormData("cardNumber", formatted)
                           }}
-                          className="h-12 text-lg border-2 border-blue-200 focus:border-blue-500"
+                          className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500 bg-white transition-colors"
                           placeholder="1234 5678 9012 3456"
                           maxLength={19}
                           required
                         />
                         {formData.cardNumber && !validateCardNumber(formData.cardNumber) && (
-                          <p className="text-sm text-red-500">Please enter a valid card number</p>
+                          <p className="text-xs text-red-500">Please enter a valid card number</p>
                         )}
                       </div>
+                      
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="expiryDate" className="text-lg font-semibold text-gray-700">Expiry Date</Label>
+                          <Label htmlFor="expiryDate" className="text-sm font-medium text-gray-700">
+                            Expiry Date
+                          </Label>
                           <Input
                             id="expiryDate"
                             value={formData.expiryDate}
@@ -630,17 +732,20 @@ export default function RegisterPage() {
                               const formatted = formatExpiryDate(e.target.value)
                               updateFormData("expiryDate", formatted)
                             }}
-                            className="h-12 text-lg border-2 border-blue-200 focus:border-blue-500"
+                            className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500 bg-white transition-colors"
                             placeholder="MM/YY"
                             maxLength={5}
                             required
                           />
                           {formData.expiryDate && !validateExpiryDate(formData.expiryDate) && (
-                            <p className="text-sm text-red-500">Invalid expiry date</p>
+                            <p className="text-xs text-red-500">Invalid expiry date</p>
                           )}
                         </div>
+                        
                         <div className="space-y-2">
-                          <Label htmlFor="cvv" className="text-lg font-semibold text-gray-700">CVV</Label>
+                          <Label htmlFor="cvv" className="text-sm font-medium text-gray-700">
+                            CVV
+                          </Label>
                           <Input
                             id="cvv"
                             value={formData.cvv}
@@ -648,7 +753,7 @@ export default function RegisterPage() {
                               const cleaned = e.target.value.replace(/\D/g, '')
                               updateFormData("cvv", cleaned)
                             }}
-                            className="h-12 text-lg border-2 border-blue-200 focus:border-blue-500"
+                            className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500 bg-white transition-colors"
                             placeholder="123"
                             maxLength={4}
                             required
@@ -659,29 +764,32 @@ export default function RegisterPage() {
                   )}
 
                   <div className="space-y-2">
-                    <Label htmlFor="billingAddress" className="text-lg font-semibold text-gray-700">Billing Address</Label>
+                    <Label htmlFor="billingAddress" className="text-sm font-medium text-gray-700">
+                      Billing Address
+                    </Label>
                     <Input
                       id="billingAddress"
                       value={formData.billingAddress}
                       onChange={(e) => updateFormData("billingAddress", e.target.value)}
-                      className="h-12 text-lg border-2 border-blue-200 focus:border-blue-500"
-                      placeholder="Full address"
+                      className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500 bg-gray-50 focus:bg-white transition-colors"
+                      placeholder="Enter your full billing address"
                     />
                   </div>
 
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-start space-x-3 p-4 bg-gray-50 rounded-xl">
                     <Checkbox
                       id="agreeTerms"
                       checked={formData.agreeTerms}
                       onCheckedChange={(checked) => updateFormData("agreeTerms", checked)}
+                      className="mt-1"
                     />
-                    <Label htmlFor="agreeTerms" className="text-sm">
+                    <Label htmlFor="agreeTerms" className="text-sm leading-relaxed">
                       I agree to the{" "}
-                      <Link href="/terms" className="text-blue-600 hover:underline">
+                      <Link href="/terms" className="text-blue-600 hover:text-blue-700 hover:underline font-medium">
                         Terms and Conditions
                       </Link>{" "}
                       and{" "}
-                      <Link href="/privacy" className="text-blue-600 hover:underline">
+                      <Link href="/privacy" className="text-blue-600 hover:text-blue-700 hover:underline font-medium">
                         Privacy Policy
                       </Link>
                     </Label>
@@ -690,14 +798,15 @@ export default function RegisterPage() {
               )}
 
               {/* Navigation Buttons */}
-              <div className="flex justify-between pt-6">
+              <div className="flex justify-between pt-8 border-t border-gray-100">
                 {currentStep > 1 && (
                   <Button
                     type="button"
                     variant="outline"
                     onClick={prevStep}
-                    className="px-8 py-3 text-lg"
+                    className="px-6 py-3 h-12 border-gray-200 hover:bg-gray-50 transition-colors"
                   >
+                    <ArrowLeft className="h-4 w-4 mr-2" />
                     Previous
                   </Button>
                 )}
@@ -706,32 +815,53 @@ export default function RegisterPage() {
                   <Button
                     type="button"
                     onClick={nextStep}
-                    className="ml-auto px-8 py-3 text-lg bg-blue-600 hover:bg-blue-700"
+                    className="ml-auto px-6 py-3 h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
                   >
                     Next Step
+                    <ArrowRight className="h-4 w-4 ml-2" />
                   </Button>
                 ) : (
                   <Button
                     type="submit"
                     disabled={isLoading}
-                    className="ml-auto px-8 py-3 text-lg bg-green-600 hover:bg-green-700"
+                    className="ml-auto px-8 py-3 h-12 bg-green-600 hover:bg-green-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
                   >
-                    {isLoading ? "Processing..." : "Complete Registration"}
+                    {isLoading ? (
+                      <div className="flex items-center">
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                        Processing...
+                      </div>
+                    ) : (
+                      <div className="flex items-center">
+                        <CheckCircle2 className="h-5 w-5 mr-2" />
+                        Complete Registration
+                      </div>
+                    )}
                   </Button>
                 )}
               </div>
             </form>
 
-            <div className="text-center mt-6">
-              <p className="text-gray-600">
+            <div className="text-center mt-8 pt-6 border-t border-gray-100">
+              <p className="text-sm text-gray-600">
                 Already have an account?{" "}
-                <Link href="/auth/login" className="text-blue-600 hover:underline font-semibold">
+                <Link 
+                  href="/auth/login" 
+                  className="font-semibold text-blue-600 hover:text-blue-700 transition-colors"
+                >
                   Sign in here
                 </Link>
               </p>
             </div>
           </CardContent>
         </Card>
+
+        {/* Footer */}
+        <div className="text-center mt-8">
+          <p className="text-sm text-gray-500">
+            © {new Date().getFullYear()} James Cook University Singapore
+          </p>
+        </div>
       </div>
     </div>
   )

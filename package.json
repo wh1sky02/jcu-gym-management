@@ -10,7 +10,11 @@
     "db:test": "node scripts/test-db.js",
     "db:stats": "node scripts/db-stats.js",
     "db:init": "node scripts/init-db.js",
-    "db:check-users": "node scripts/check-users.js"
+    "db:check-users": "node scripts/check-users.js",
+    "admin:check": "node scripts/check-admin.js",
+    "admin:fix-password": "node scripts/fix-admin-password.js",
+    "billing:clear": "node scripts/clear-billing.js",
+    "billing:check": "node scripts/check-billing.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

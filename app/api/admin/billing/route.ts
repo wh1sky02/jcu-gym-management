@@ -5,7 +5,7 @@ import { getDatabaseAdapter } from "@/lib/database-adapter"
 async function createSampleBillingData(db: any) {
   try {
     // Get some existing users to create transactions for
-    const users = await db.executeQuery('SELECT id, first_name, last_name FROM users WHERE role != $1 LIMIT 3', ['admin'])
+    const users = await db.executeQuery('SELECT id, first_name, last_name FROM users WHERE role != $1 LIMIT 1', ['admin'])
     
     if (users.length === 0) {
       console.log('No users found to create sample billing data')
@@ -17,37 +17,11 @@ async function createSampleBillingData(db: any) {
         id: randomUUID(),
         user_id: users[0].id,
         transaction_type: 'payment',
-        amount: 150.00,
-        currency: 'SGD',
-        payment_method: 'credit_card',
-        payment_reference: 'TXN_' + randomUUID().slice(0, 8).toUpperCase(),
-        description: '1-trimester gym membership',
-        status: 'completed',
-        completed_at: new Date().toISOString(),
-        created_at: new Date().toISOString()
-      },
-      {
-        id: randomUUID(),
-        user_id: users[1]?.id || users[0].id,
-        transaction_type: 'payment', 
         amount: 350.00,
         currency: 'SGD',
-        payment_method: 'bank_transfer',
-        payment_reference: 'TXN_' + randomUUID().slice(0, 8).toUpperCase(),
-        description: '3-trimester gym membership',
-        status: 'completed',
-        completed_at: new Date().toISOString(),
-        created_at: new Date().toISOString()
-      },
-      {
-        id: randomUUID(),
-        user_id: users[2]?.id || users[0].id,
-        transaction_type: 'payment', 
-        amount: 500.00,
-        currency: 'SGD',
         payment_method: 'credit_card',
         payment_reference: 'TXN_' + randomUUID().slice(0, 8).toUpperCase(),
-        description: '1-year gym membership',
+        description: '3-trimester gym membership',
         status: 'completed',
         completed_at: new Date().toISOString(),
         created_at: new Date().toISOString()

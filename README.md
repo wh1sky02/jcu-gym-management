@@ -21,7 +21,7 @@ A web application for managing gym bookings at James Cook University Singapore.
 - Save file
 
 ### Step 4: Start Application
-**Windows:** Double-click `start.ps1`
+**Windows:** Run `powershell -ep bypass` then run `./start.ps1`
 **Mac/Linux:** Run `chmod +x start.sh && ./start.sh`
 
 **Or manually:**
@@ -233,14 +233,6 @@ DATABASE_URL=postgresql://username:password@hostname/database_name?sslmode=requi
 
 ---
 
-## 🛑 How to Stop the Application
-
-- In the terminal where the app is running, press `Ctrl + C`
-- Wait for the shutdown message
-- Close the terminal window
-
----
-
 ## 🔐 Security Important Notes
 
 ### For Testing/Development:
@@ -252,28 +244,6 @@ DATABASE_URL=postgresql://username:password@hostname/database_name?sslmode=requi
 - Use strong, unique passwords
 - Consider additional security measures
 - Keep your `.env.local` file private
-
----
-
-## 📞 Getting Help
-
-### Self-Help Resources:
-1. **Check Error Messages** - Read what the terminal says
-2. **Database Issues** - Check your Neon dashboard for status
-3. **Port Issues** - Try a different port number
-4. **Installation Issues** - Reinstall Node.js
-
-### Common Error Keywords:
-- `ECONNREFUSED` = Database connection problem
-- `EADDRINUSE` = Port already in use
-- `MODULE_NOT_FOUND` = Missing dependencies
-- `Permission denied` = File permission issue
-
-### Need More Help?
-- Check the error message carefully
-- Try the solutions in the troubleshooting section above
-- Contact your system administrator
-- Check if your internet connection is stable
 
 ---
 
