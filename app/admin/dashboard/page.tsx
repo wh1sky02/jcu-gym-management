@@ -49,6 +49,7 @@ import {
   User
 } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
 
 interface User {
   id: string
@@ -176,6 +177,7 @@ export default function AdminDashboard() {
   })
   const [notificationHistory, setNotificationHistory] = useState<any[]>([])
   const [notificationLoading, setNotificationLoading] = useState(false)
+  const [settingsLoading, setSettingsLoading] = useState(false)
 
   // Helper functions for gym schedule validation
   const isValidGymDay = (date: string): boolean => {
@@ -403,6 +405,7 @@ export default function AdminDashboard() {
   // Load notification data when component mounts
   useEffect(() => {
     if (user?.role === 'admin') {
+      // Then fetch other data
       fetchNotificationHistory()
     }
   }, [user])
@@ -419,10 +422,16 @@ export default function AdminDashboard() {
     )
   }
 
-  // Redirect non-admin users
+  // Show loading while redirecting non-admin users
   if (!user || user.role !== "admin") {
-    router.push("/auth/login")
-    return null
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-blue-600 font-medium">Redirecting...</p>
+        </div>
+      </div>
+    )
   }
 
   const handleLogout = () => {
@@ -1022,10 +1031,14 @@ export default function AdminDashboard() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <Shield className="h-6 w-6 text-blue-600" />
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-blue-100 rounded-lg">
+                  <Shield className="h-7 w-7 text-blue-600" />
+                </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-blue-900">JCU Fitness Center</h1>
+                  <h1 className="text-2xl font-bold text-blue-900">
+                    JCU Fitness Center
+                  </h1>
                   <p className="text-blue-700 font-medium">Admin Dashboard</p>
                 </div>
               </div>
@@ -1051,33 +1064,32 @@ export default function AdminDashboard() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7 bg-slate-800/50 border border-amber-500/30">
-            <TabsTrigger value="overview" className="text-white data-[state=active]:bg-amber-600">
+          <TabsList className="grid w-full grid-cols-7 bg-white border border-gray-200 shadow-md rounded-lg p-1">
+            <TabsTrigger value="overview" className="text-gray-700 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg transition-all duration-200">
               <BarChart3 className="h-4 w-4 mr-2" />
               Overview
             </TabsTrigger>
-            <TabsTrigger value="users" className="text-white data-[state=active]:bg-amber-600">
+            <TabsTrigger value="users" className="text-gray-700 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg transition-all duration-200">
               <Users className="h-4 w-4 mr-2" />
               Users
             </TabsTrigger>
-            <TabsTrigger value="sessions" className="text-white data-[state=active]:bg-amber-600">
+            <TabsTrigger value="sessions" className="text-gray-700 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg transition-all duration-200">
               <Calendar className="h-4 w-4 mr-2" />
               Sessions
             </TabsTrigger>
-            <TabsTrigger value="bookings" className="text-white data-[state=active]:bg-amber-600">
+            <TabsTrigger value="bookings" className="text-gray-700 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg transition-all duration-200">
               <Clock className="h-4 w-4 mr-2" />
               Bookings
             </TabsTrigger>
-
-            <TabsTrigger value="notifications" className="text-white data-[state=active]:bg-amber-600">
+            <TabsTrigger value="notifications" className="text-gray-700 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg transition-all duration-200">
               <Bell className="h-4 w-4 mr-2" />
               Notifications
             </TabsTrigger>
-            <TabsTrigger value="billing" className="text-white data-[state=active]:bg-amber-600">
+            <TabsTrigger value="billing" className="text-gray-700 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg transition-all duration-200">
               <DollarSign className="h-4 w-4 mr-2" />
               Billing
             </TabsTrigger>
-            <TabsTrigger value="settings" className="text-white data-[state=active]:bg-amber-600">
+            <TabsTrigger value="settings" className="text-gray-700 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg transition-all duration-200">
               <Settings className="h-4 w-4 mr-2" />
               Settings
             </TabsTrigger>
@@ -1086,59 +1098,80 @@ export default function AdminDashboard() {
           <TabsContent value="overview" className="space-y-6">
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Card className="bg-slate-800/50 border-amber-500/30">
+              <Card className="bg-white border-l-4 border-l-blue-500 shadow-md">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-white">Total Users</CardTitle>
-                  <Users className="h-4 w-4 text-amber-400" />
+                  <CardTitle className="text-sm font-medium text-blue-600">Total Users</CardTitle>
+                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <Users className="h-6 w-6 text-blue-600" />
+                  </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-white">{stats.totalUsers}</div>
+                  <div className="text-3xl font-bold text-blue-700">
+                    {stats.totalUsers}
+                  </div>
                 </CardContent>
               </Card>
 
-              <Card className="bg-slate-800/50 border-amber-500/30">
+              <Card className="bg-white border-l-4 border-l-green-500 shadow-md">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-white">Active Members</CardTitle>
-                  <UserCheck className="h-4 w-4 text-green-400" />
+                  <CardTitle className="text-sm font-medium text-green-600">Active Members</CardTitle>
+                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                    <UserCheck className="h-6 w-6 text-green-600" />
+                  </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-white">{stats.activeUsers}</div>
+                  <div className="text-3xl font-bold text-green-700">
+                    {stats.activeUsers}
+                  </div>
                 </CardContent>
               </Card>
 
-              <Card className="bg-slate-800/50 border-amber-500/30">
+              <Card className="bg-white border-l-4 border-l-amber-500 shadow-md">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-white">Pending Approvals</CardTitle>
-                  <Clock className="h-4 w-4 text-yellow-400" />
+                  <CardTitle className="text-sm font-medium text-amber-600">Pending Approvals</CardTitle>
+                  <div className="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
+                    <Clock className="h-6 w-6 text-amber-600" />
+                  </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-white">{stats.pendingUsers}</div>
+                  <div className="text-3xl font-bold text-amber-700">
+                    {stats.pendingUsers}
+                  </div>
                 </CardContent>
               </Card>
 
-              <Card className="bg-slate-800/50 border-amber-500/30">
+              <Card className="bg-white border-l-4 border-l-purple-500 shadow-md">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-white">Total Revenue</CardTitle>
-                  <TrendingUp className="h-4 w-4 text-amber-400" />
+                  <CardTitle className="text-sm font-medium text-purple-600">Total Revenue</CardTitle>
+                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <TrendingUp className="h-6 w-6 text-purple-600" />
+                  </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-white">S${stats.totalRevenue.toFixed(2)}</div>
+                  <div className="text-3xl font-bold text-purple-700">
+                    S${stats.totalRevenue.toFixed(2)}
+                  </div>
                 </CardContent>
               </Card>
             </div>
 
             {/* Recent Activity */}
-            <Card className="bg-slate-800/50 border-amber-500/30">
+            <Card className="bg-white shadow-md">
               <CardHeader>
-                <CardTitle className="text-white">Recent User Registrations</CardTitle>
+                <CardTitle className="text-blue-900 flex items-center">
+                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                    <Users className="h-6 w-6 text-blue-600" />
+                  </div>
+                  Recent User Registrations
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   {users.slice(0, 5).map((user) => (
-                    <div key={user.id} className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
+                    <div key={user.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-all duration-200">
                       <div>
-                        <p className="font-medium text-white">{user.first_name} {user.last_name}</p>
-                        <p className="text-sm text-gray-300">{user.email}</p>
+                        <p className="font-medium text-gray-900">{user.first_name} {user.last_name}</p>
+                        <p className="text-sm text-gray-600">{user.email}</p>
                       </div>
                       <div className="text-right">
                         {getStatusBadge(user.status)}
@@ -1153,19 +1186,21 @@ export default function AdminDashboard() {
           <TabsContent value="users" className="space-y-6">
             {/* User Management */}
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-white">User Management</h2>
+              <h2 className="text-3xl font-bold text-blue-900">
+                User Management
+              </h2>
               <div className="flex space-x-4">
                 <Input
                   placeholder="Search users..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-64 bg-slate-800/50 border-amber-500/30 text-white"
+                  className="w-64 bg-white border-gray-300 text-gray-900 placeholder:text-gray-500 focus:border-blue-500"
                 />
                 <Select value={filterStatus} onValueChange={setFilterStatus}>
-                  <SelectTrigger className="w-40 bg-slate-800/50 border-amber-500/30 text-white">
+                  <SelectTrigger className="w-40 bg-white border-gray-300 text-gray-900">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white border-gray-200">
                     <SelectItem value="all">All Status</SelectItem>
                     <SelectItem value="approved">Active</SelectItem>
                     <SelectItem value="pending">Pending</SelectItem>
@@ -1175,42 +1210,49 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            <Card className="bg-slate-800/50 border-amber-500/30">
+            <Card className="bg-white shadow-md">
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
                   <table className="w-full">
-                    <thead className="bg-slate-700/50">
+                    <thead className="bg-gray-50 border-b border-gray-200">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">User</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Student ID</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Membership</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Status</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Expiry</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Payment</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Actions</th>
+                        <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                        <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student ID</th>
+                        <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Membership</th>
+                        <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Expiry</th>
+                        <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment</th>
+                        <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-700/50">
+                    <tbody className="divide-y divide-gray-200">
                       {filteredUsers.map((user) => (
-                        <tr key={user.id} className="hover:bg-slate-700/30">
+                        <tr key={user.id} className="hover:bg-gray-50 transition-all duration-200">
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div>
-                              <div className="text-sm font-medium text-white">{user.first_name} {user.last_name}</div>
-                              <div className="text-sm text-gray-300">{user.email}</div>
+                            <div className="flex items-center">
+                              <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                <span className="text-blue-600 font-medium">
+                                  {user.first_name.charAt(0)}{user.last_name.charAt(0)}
+                                </span>
+                              </div>
+                              <div className="ml-4">
+                                <div className="text-sm font-medium text-gray-900">{user.first_name} {user.last_name}</div>
+                                <div className="text-sm text-gray-500">{user.email}</div>
+                              </div>
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-white">{user.student_id}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-white">{user.membership_type}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.student_id}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.membership_type}</td>
                           <td className="px-6 py-4 whitespace-nowrap">{getStatusBadge(user.status)}</td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="space-y-1">
-                              <div className="text-sm text-white">{user.expiry_date}</div>
+                              <div className="text-sm text-gray-900">{user.expiry_date}</div>
                               {getExpiryStatus(user.expiry_date)}
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-white">S${user.payment_amount}</div>
-                            <div className="text-xs text-gray-300">{user.payment_method}</div>
+                            <div className="text-sm text-gray-900">S${user.payment_amount}</div>
+                            <div className="text-xs text-gray-500">{user.payment_method}</div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="flex space-x-2">
@@ -1218,9 +1260,8 @@ export default function AdminDashboard() {
                                 <>
                                   <Button
                                     size="sm"
-                                    variant="outline"
                                     onClick={() => handleApproveUser(user.id)}
-                                    className="border-green-500/50 text-green-400 hover:bg-green-500/10"
+                                    className="bg-green-600 hover:bg-green-700 text-white"
                                   >
                                     <UserCheck className="h-4 w-4" />
                                   </Button>
@@ -1228,7 +1269,7 @@ export default function AdminDashboard() {
                                     size="sm"
                                     variant="outline"
                                     onClick={() => handleDeclineUser(user.id)}
-                                    className="border-red-500/50 text-red-400 hover:bg-red-500/10"
+                                    className="border-red-300 text-red-600 hover:bg-red-50"
                                   >
                                     <UserX className="h-4 w-4" />
                                   </Button>
@@ -1239,7 +1280,7 @@ export default function AdminDashboard() {
                                     size="sm"
                                     variant="outline"
                                     onClick={() => handleEditUser(user)}
-                                    className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
+                                    className="border-blue-300 text-blue-600 hover:bg-blue-50"
                                   >
                                     <Edit className="h-4 w-4" />
                                   </Button>
@@ -1247,8 +1288,8 @@ export default function AdminDashboard() {
                                     size="sm"
                                     variant="outline"
                                     onClick={() => handleSuspendUser(user.id, user.status)}
-                                    className={`border-yellow-500/50 text-yellow-400 hover:bg-yellow-500/10 ${
-                                      user.status === 'suspended' ? 'bg-yellow-500/20' : ''
+                                    className={`border-amber-300 text-amber-600 hover:bg-amber-50 ${
+                                      user.status === 'suspended' ? 'bg-amber-50' : ''
                                     }`}
                                   >
                                     {user.status === 'suspended' ? (
@@ -1263,7 +1304,7 @@ export default function AdminDashboard() {
                                 size="sm"
                                 variant="outline"
                                 onClick={() => handleDeleteUser(user.id)}
-                                className="border-red-500/50 text-red-400 hover:bg-red-500/10"
+                                className="border-red-300 text-red-600 hover:bg-red-50"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </Button>
@@ -1280,10 +1321,15 @@ export default function AdminDashboard() {
 
           <TabsContent value="sessions" className="space-y-6">
             {/* Session Management */}
-            <Card className="bg-slate-800/50 border-amber-500/30">
+            <Card className="bg-white shadow-md">
               <CardHeader>
-                <CardTitle className="text-white">Session Management</CardTitle>
-                <CardDescription className="text-gray-300">Manage gym session availability and capacity</CardDescription>
+                <CardTitle className="text-blue-900 flex items-center">
+                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                    <Calendar className="h-6 w-6 text-blue-600" />
+                  </div>
+                  Session Management
+                </CardTitle>
+                <CardDescription className="text-gray-600">Manage gym session availability and capacity</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -1298,7 +1344,7 @@ export default function AdminDashboard() {
                     </Button>
                     <Button 
                       variant="outline" 
-                      className="border-amber-500/50 text-amber-400 hover:bg-amber-500/10"
+                      className="border-blue-300 text-blue-600 hover:bg-blue-50"
                       onClick={() => setShowSessionListModal(true)}
                     >
                       <Settings className="h-4 w-4 mr-2" />
@@ -1306,7 +1352,7 @@ export default function AdminDashboard() {
                     </Button>
                     <Button 
                       variant="outline" 
-                      className="border-green-500/50 text-green-400 hover:bg-green-500/10"
+                      className="border-green-300 text-green-600 hover:bg-green-50"
                       onClick={fetchData}
                       disabled={loading}
                     >
@@ -1319,37 +1365,57 @@ export default function AdminDashboard() {
                   
                   {/* All Sessions */}
                   <div className="mt-6">
-                    <h4 className="text-white font-semibold mb-3">
+                    <h4 className="text-gray-900 font-semibold mb-3 flex items-center">
+                      <div className="w-2 h-2 bg-blue-600 rounded-full mr-2"></div>
                       All Sessions
                     </h4>
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       {sessions.length === 0 ? (
-                        <div className="text-center py-8 text-gray-400">
-                          No sessions scheduled
+                        <div className="text-center py-12 text-gray-500">
+                          <Calendar className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                          <p>No sessions scheduled</p>
                         </div>
                       ) : (
                         sessions.map((session) => (
-                          <div key={session.id} className="flex items-center justify-between p-4 bg-slate-700/50 rounded-lg">
+                          <div key={session.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-all duration-200">
                             <div className="flex-1">
                               <div className="flex items-center space-x-4">
-                                <span className="text-white font-medium">
-                                  {session.start_time} - {session.end_time}
-                                </span>
-                                <Badge variant="outline" className="border-blue-500/50 text-blue-400">
-                                  {session.type}
-                                </Badge>
-                                <span className="text-gray-300">{session.instructor}</span>
-                              </div>
-                              <div className="text-sm text-gray-400 mt-1">
-                                {session.description}
+                                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                  <Calendar className="h-5 w-5 text-blue-600" />
+                                </div>
+                                <div>
+                                  <div className="flex items-center space-x-3">
+                                    <span className="text-gray-900 font-medium">
+                                      {new Date(session.date).toLocaleDateString('en-US', { 
+                                        weekday: 'short', 
+                                        month: 'short', 
+                                        day: 'numeric' 
+                                      })}
+                                    </span>
+                                    <span className="text-gray-900 font-medium">
+                                      {session.start_time} - {session.end_time}
+                                    </span>
+                                    <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+                                      {session.type}
+                                    </Badge>
+                                    {session.instructor && (
+                                      <span className="text-gray-600">{session.instructor}</span>
+                                    )}
+                                  </div>
+                                  {session.description && (
+                                    <div className="text-sm text-gray-500 mt-1">
+                                      {session.description}
+                                    </div>
+                                  )}
+                                </div>
                               </div>
                             </div>
                             <div className="flex items-center space-x-4">
                               <div className="text-right">
-                                <div className="text-white">
+                                <div className="text-gray-900 font-medium">
                                   {session.current_bookings}/{session.capacity} booked
                                 </div>
-                                <div className="text-sm text-gray-400">
+                                <div className="text-sm text-gray-500">
                                   {Math.round((session.current_bookings / session.capacity) * 100)}% utilized
                                 </div>
                               </div>
@@ -1357,7 +1423,7 @@ export default function AdminDashboard() {
                                 <Button 
                                   size="sm" 
                                   variant="outline" 
-                                  className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
+                                  className="border-blue-300 text-blue-600 hover:bg-blue-50"
                                   onClick={() => handleEditSession(session)}
                                 >
                                   <Edit className="h-3 w-3" />
@@ -1365,7 +1431,7 @@ export default function AdminDashboard() {
                                 <Button 
                                   size="sm" 
                                   variant="outline" 
-                                  className="border-red-500/50 text-red-400 hover:bg-red-500/10"
+                                  className="border-red-300 text-red-600 hover:bg-red-50"
                                   onClick={() => handleDeleteSession(session.id)}
                                 >
                                   <Trash2 className="h-3 w-3" />
@@ -1382,41 +1448,46 @@ export default function AdminDashboard() {
             </Card>
 
             {/* Week Overview */}
-            <Card className="bg-slate-800/50 border-amber-500/30">
+            <Card className="bg-white shadow-md">
               <CardHeader>
-                <CardTitle className="text-white flex items-center justify-between">
-                  Weekly Overview (Mon-Sat)
+                <CardTitle className="text-blue-900 flex items-center justify-between">
+                  <div className="flex items-center">
+                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                      <TrendingUp className="h-6 w-6 text-green-600" />
+                    </div>
+                    Weekly Overview (Mon-Sat)
+                  </div>
                   <Button
                     size="sm"
                     variant="outline"
-                    className="border-amber-500/50 text-amber-400 hover:bg-amber-500/10"
+                    className="border-green-300 text-green-600 hover:bg-green-50"
                     onClick={loadWeeklyOverview}
                     disabled={weeklyLoading}
                   >
                     {weeklyLoading ? (
-                      <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-amber-400"></div>
+                      <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-green-600"></div>
                     ) : (
                       <TrendingUp className="h-3 w-3" />
                     )}
                   </Button>
                 </CardTitle>
-                <CardDescription className="text-gray-300">
+                <CardDescription className="text-gray-600">
                   Session utilization Monday through Saturday (7 AM - 9 PM)
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
                   {weeklyLoading ? (
-                    <div className="text-center py-8 text-amber-400">Loading weekly data...</div>
+                    <div className="text-center py-8 text-blue-600">Loading weekly data...</div>
                   ) : weeklyData.length === 0 ? (
-                    <div className="text-center py-8 text-gray-400">No weekly data available</div>
+                    <div className="text-center py-8 text-gray-500">No weekly data available</div>
                   ) : (
                     weeklyData.map((dayData) => (
-                      <div key={dayData.day} className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg hover:bg-slate-700/70 transition-colors">
-                        <span className="text-white font-medium">{dayData.day}</span>
+                      <div key={dayData.day} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                        <span className="text-gray-900 font-medium">{dayData.day}</span>
                         <div className="flex items-center space-x-4">
                           <div className="text-right">
-                            <span className="text-green-400 text-sm">
+                            <span className="text-green-600 text-sm">
                               {dayData.sessions} sessions
                             </span>
                             <div className="text-xs text-gray-400">
@@ -1425,19 +1496,19 @@ export default function AdminDashboard() {
                           </div>
                           <div className="text-right">
                             <span className={`text-sm font-medium ${
-                              dayData.utilization >= 80 ? 'text-red-400' : 
-                              dayData.utilization >= 60 ? 'text-amber-400' : 'text-green-400'
+                              dayData.utilization >= 80 ? 'text-red-600' : 
+                              dayData.utilization >= 60 ? 'text-amber-600' : 'text-green-600'
                             }`}>
                               {dayData.utilization}% booked
                             </span>
-                            <div className="text-xs text-gray-400">
+                            <div className="text-xs text-gray-500">
                               {dayData.totalBookings}/{dayData.totalCapacity}
                             </div>
                           </div>
                           <Button 
                             size="sm" 
                             variant="outline" 
-                            className="border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
+                            className="border-blue-300 text-blue-600 hover:bg-blue-50"
                             onClick={() => handleDateChange(dayData.date)}
                           >
                             View Day
@@ -1450,27 +1521,27 @@ export default function AdminDashboard() {
                 
                 {/* Weekly Summary */}
                 {weeklyData.length > 0 && (
-                  <div className="mt-4 pt-4 border-t border-slate-600">
+                  <div className="mt-4 pt-4 border-t border-gray-200">
                     <div className="grid grid-cols-3 gap-4 text-center">
                       <div>
-                        <div className="text-lg font-bold text-amber-400">
+                        <div className="text-lg font-bold text-amber-600">
                           {weeklyData.reduce((sum, day) => sum + day.sessions, 0)}
                         </div>
-                        <div className="text-xs text-gray-400">Total Sessions</div>
+                        <div className="text-xs text-gray-500">Total Sessions</div>
                       </div>
                       <div>
-                        <div className="text-lg font-bold text-green-400">
+                        <div className="text-lg font-bold text-green-600">
                           {weeklyData.reduce((sum, day) => sum + day.totalBookings, 0)}
                         </div>
-                        <div className="text-xs text-gray-400">Total Bookings</div>
+                        <div className="text-xs text-gray-500">Total Bookings</div>
                       </div>
                       <div>
-                        <div className="text-lg font-bold text-blue-400">
+                        <div className="text-lg font-bold text-blue-600">
                           {Math.round(
                             weeklyData.reduce((sum, day) => sum + day.utilization, 0) / weeklyData.length
                           )}%
                         </div>
-                        <div className="text-xs text-gray-400">Avg Utilization</div>
+                        <div className="text-xs text-gray-500">Avg Utilization</div>
                       </div>
                     </div>
                   </div>
@@ -1480,34 +1551,34 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="bookings" className="space-y-6">
-            <h2 className="text-2xl font-bold text-white">Booking Management</h2>
+            <h2 className="text-3xl font-bold text-blue-900">Booking Management</h2>
             
             {/* Booking Filters */}
-            <Card className="bg-slate-800/50 border-amber-500/30">
+            <Card className="bg-white shadow-md">
               <CardHeader>
-                <CardTitle className="text-white">Filter Bookings</CardTitle>
-                <CardDescription className="text-gray-300">
+                <CardTitle className="text-blue-900">Filter Bookings</CardTitle>
+                <CardDescription className="text-gray-600">
                   Filter bookings by date and status
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Date</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
                     <input
                       type="date"
                       value={selectedBookingDate}
                       onChange={(e) => handleBookingDateChange(e.target.value)}
-                      className="w-full px-3 py-2 bg-slate-700 text-white border border-slate-600 rounded-lg focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                      className="w-full px-3 py-2 bg-white text-gray-900 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Status</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
                     <Select value={bookingFilter} onValueChange={handleBookingFilterChange}>
-                      <SelectTrigger className="bg-slate-700 text-white border-slate-600">
+                      <SelectTrigger className="bg-white text-gray-900 border-gray-300">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="bg-slate-700 border-slate-600">
+                      <SelectContent className="bg-white border-gray-200">
                         <SelectItem value="all">All Bookings</SelectItem>
                         <SelectItem value="confirmed">Confirmed</SelectItem>
                         <SelectItem value="cancelled">Cancelled</SelectItem>
@@ -1518,7 +1589,7 @@ export default function AdminDashboard() {
                   <div className="flex items-end">
                     <Button
                       onClick={() => fetchBookings(selectedBookingDate, bookingFilter)}
-                      className="w-full bg-amber-600 hover:bg-amber-700 text-white"
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                       disabled={bookingLoading}
                     >
                       {bookingLoading ? "Loading..." : "Refresh"}
@@ -1529,9 +1600,9 @@ export default function AdminDashboard() {
             </Card>
 
             {/* Bookings List */}
-            <Card className="bg-slate-800/50 border-amber-500/30">
+            <Card className="bg-white shadow-md">
               <CardHeader>
-                <CardTitle className="text-white">
+                <CardTitle className="text-blue-900">
                   Bookings for {new Date(selectedBookingDate).toLocaleDateString('en-AU', { 
                     weekday: 'long', 
                     year: 'numeric', 
@@ -1539,35 +1610,35 @@ export default function AdminDashboard() {
                     day: 'numeric' 
                   })}
                 </CardTitle>
-                <CardDescription className="text-gray-300">
+                <CardDescription className="text-gray-600">
                   {bookings.length} booking{bookings.length !== 1 ? 's' : ''} found
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 {bookingLoading ? (
-                  <div className="text-center py-8 text-gray-400">Loading bookings...</div>
+                  <div className="text-center py-8 text-gray-500">Loading bookings...</div>
                 ) : bookings.length === 0 ? (
-                  <div className="text-center py-8 text-gray-400">No bookings found for selected criteria</div>
+                  <div className="text-center py-8 text-gray-500">No bookings found for selected criteria</div>
                 ) : (
                   <div className="space-y-4 max-h-96 overflow-y-auto">
                     {bookings.map((booking) => (
-                      <div key={booking.id} className="p-4 bg-slate-700/50 rounded-lg border border-slate-600/50 hover:bg-slate-700/70 transition-colors">
+                      <div key={booking.id} className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                         <div className="flex items-center justify-between">
                           <div className="flex-1">
                             <div className="flex items-center space-x-3">
                               <div className="flex-1">
-                                <p className="font-semibold text-white">
+                                <p className="font-semibold text-gray-900">
                                   {booking.user?.name || `${booking.user?.firstName || ''} ${booking.user?.lastName || ''}`.trim() || 'Unknown User'}
                                 </p>
-                                <p className="text-sm text-gray-300">{booking.user?.email}</p>
-                                <p className="text-xs text-gray-400">Student ID: {booking.user?.studentId || 'N/A'}</p>
+                                <p className="text-sm text-gray-600">{booking.user?.email}</p>
+                                <p className="text-xs text-gray-500">Student ID: {booking.user?.studentId || 'N/A'}</p>
                               </div>
                               <div className="text-center">
-                                <p className="text-sm font-medium text-white">
+                                <p className="text-sm font-medium text-gray-900">
                                   {booking.session?.startTime} - {booking.session?.endTime}
                                 </p>
-                                <p className="text-xs text-gray-400">{booking.session?.type || 'General Session'}</p>
-                                <p className="text-xs text-gray-400">
+                                <p className="text-xs text-gray-600">{booking.session?.type || 'General Session'}</p>
+                                <p className="text-xs text-gray-600">
                                   Instructor: {booking.session?.instructor || 'Self-guided'}
                                 </p>
                               </div>
@@ -1582,14 +1653,14 @@ export default function AdminDashboard() {
                                 >
                                   {booking.status}
                                 </Badge>
-                                <p className="text-xs text-gray-400 mt-1">
+                                <p className="text-xs text-gray-500 mt-1">
                                   Booked: {new Date(booking.bookingDate || booking.createdAt).toLocaleDateString()}
                                 </p>
                                 {booking.status === 'confirmed' && (
                                   <Button
                                     size="sm"
                                     variant="outline"
-                                    className="mt-2 border-red-500/50 text-red-400 hover:bg-red-500/10"
+                                    className="mt-2 border-red-300 text-red-600 hover:bg-red-50"
                                     onClick={() => handleCancelBooking(booking.id)}
                                   >
                                     Cancel
@@ -1612,36 +1683,30 @@ export default function AdminDashboard() {
           <TabsContent value="notifications" className="space-y-6">
             {/* Notifications Management */}
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-white">Notifications Management</h2>
-              <Button
-                className="bg-blue-600 hover:bg-blue-700 text-white"
-                onClick={() => {
-                  // Handle send notification
-                  alert('Send notification functionality coming soon!')
-                }}
-              >
-                <Bell className="h-4 w-4 mr-2" />
-                Send Global Notification
-              </Button>
+              <h2 className="text-3xl font-bold text-blue-900">
+                Notifications Management
+              </h2>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Send Notification */}
-              <Card className="bg-slate-800/50 border-blue-500/30">
+              <Card className="bg-white shadow-md">
                 <CardHeader>
-                  <CardTitle className="text-white flex items-center">
-                    <Bell className="h-5 w-5 mr-2 text-blue-400" />
+                  <CardTitle className="text-blue-900 flex items-center">
+                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                      <Bell className="h-6 w-6 text-blue-600" />
+                    </div>
                     Send Notification
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">Type</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Type</label>
                       <select 
                         value={notificationForm.type}
                         onChange={(e) => setNotificationForm(prev => ({ ...prev, type: e.target.value }))}
-                        className="w-full p-2 bg-slate-700 border border-gray-600 rounded text-white"
+                        className="w-full p-3 bg-white border border-gray-300 rounded-lg text-gray-900 focus:border-blue-500 transition-colors"
                       >
                         <option value="announcement">📢 Announcement</option>
                         <option value="info">ℹ️ Information</option>
@@ -1652,11 +1717,11 @@ export default function AdminDashboard() {
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">Priority</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Priority</label>
                       <select 
                         value={notificationForm.priority}
                         onChange={(e) => setNotificationForm(prev => ({ ...prev, priority: e.target.value }))}
-                        className="w-full p-2 bg-slate-700 border border-gray-600 rounded text-white"
+                        className="w-full p-3 bg-white border border-gray-300 rounded-lg text-gray-900 focus:border-blue-500 transition-colors"
                       >
                         <option value="normal">Normal</option>
                         <option value="high">High</option>
@@ -1666,11 +1731,11 @@ export default function AdminDashboard() {
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">Target</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Target</label>
                       <select 
                         value={notificationForm.target}
                         onChange={(e) => setNotificationForm(prev => ({ ...prev, target: e.target.value }))}
-                        className="w-full p-2 bg-slate-700 border border-gray-600 rounded text-white"
+                        className="w-full p-3 bg-white border border-gray-300 rounded-lg text-gray-900 focus:border-blue-500 transition-colors"
                       >
                         <option value="">All Users (Global)</option>
                         {users.map(user => (
@@ -1682,31 +1747,31 @@ export default function AdminDashboard() {
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">Title</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
                       <input 
                         type="text" 
                         value={notificationForm.title}
                         onChange={(e) => setNotificationForm(prev => ({ ...prev, title: e.target.value }))}
                         placeholder="Notification title..."
-                        className="w-full p-2 bg-slate-700 border border-gray-600 rounded text-white"
+                        className="w-full p-3 bg-white border border-gray-300 rounded-lg text-gray-900 focus:border-blue-500 transition-colors placeholder:text-gray-500"
                       />
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">Message</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Message</label>
                       <textarea 
                         rows={3}
                         value={notificationForm.message}
                         onChange={(e) => setNotificationForm(prev => ({ ...prev, message: e.target.value }))}
                         placeholder="Notification message..."
-                        className="w-full p-2 bg-slate-700 border border-gray-600 rounded text-white"
+                        className="w-full p-3 bg-white border border-gray-300 rounded-lg text-gray-900 focus:border-blue-500 transition-colors placeholder:text-gray-500"
                       />
                     </div>
                     
                     <Button 
                       onClick={handleSendNotification}
                       disabled={notificationLoading}
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50"
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50 shadow-md hover:shadow-lg transition-all duration-200"
                     >
                       {notificationLoading ? 'Sending...' : 'Send Notification'}
                     </Button>
@@ -1715,10 +1780,12 @@ export default function AdminDashboard() {
               </Card>
 
               {/* Notification Templates */}
-              <Card className="bg-slate-800/50 border-blue-500/30">
+              <Card className="bg-white shadow-md">
                 <CardHeader>
-                  <CardTitle className="text-white flex items-center">
-                    <FileText className="h-5 w-5 mr-2 text-blue-400" />
+                  <CardTitle className="text-blue-900 flex items-center">
+                    <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
+                      <FileText className="h-6 w-6 text-purple-600" />
+                    </div>
                     Quick Templates
                   </CardTitle>
                 </CardHeader>
@@ -1732,7 +1799,7 @@ export default function AdminDashboard() {
                         type: "warning",
                         priority: "high"
                       })}
-                      className="w-full justify-start text-left border-yellow-500/50 text-yellow-400 hover:bg-yellow-500/10"
+                      className="w-full justify-start text-left border-amber-300 text-amber-600 hover:bg-amber-50 hover:border-amber-400 transition-all duration-200"
                     >
                       🔧 Maintenance Notice
                     </Button>
@@ -1745,7 +1812,7 @@ export default function AdminDashboard() {
                         type: "announcement",
                         priority: "normal"
                       })}
-                      className="w-full justify-start text-left border-purple-500/50 text-purple-400 hover:bg-purple-500/10"
+                      className="w-full justify-start text-left border-purple-300 text-purple-600 hover:bg-purple-50 hover:border-purple-400 transition-all duration-200"
                     >
                       🏋️ New Equipment
                     </Button>
@@ -1758,7 +1825,7 @@ export default function AdminDashboard() {
                         type: "info",
                         priority: "normal"
                       })}
-                      className="w-full justify-start text-left border-blue-500/50 text-blue-400 hover:bg-blue-500/10"
+                      className="w-full justify-start text-left border-blue-300 text-blue-600 hover:bg-blue-50 hover:border-blue-400 transition-all duration-200"
                     >
                       ⏰ Session Reminder
                     </Button>
@@ -1768,35 +1835,40 @@ export default function AdminDashboard() {
             </div>
 
             {/* Notification History */}
-            <Card className="bg-slate-800/50 border-blue-500/30">
+            <Card className="bg-white shadow-md">
               <CardHeader>
-                <CardTitle className="text-white">Recent Notifications</CardTitle>
+                <CardTitle className="text-blue-900 flex items-center">
+                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
+                    <Bell className="h-6 w-6 text-blue-600" />
+                  </div>
+                  Recent Notifications
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 {notificationHistory.length === 0 ? (
-                  <div className="text-center py-8 text-gray-400">
-                    <Bell className="h-12 w-12 mx-auto mb-3" />
+                  <div className="text-center py-12 text-gray-500">
+                    <Bell className="h-12 w-12 mx-auto mb-3 opacity-50" />
                     <p>No notifications sent yet</p>
                     <p className="text-sm">Sent notifications will appear here</p>
                   </div>
                 ) : (
                   <div className="space-y-3 max-h-64 overflow-y-auto">
                     {notificationHistory.slice(0, 10).map((notification) => (
-                      <div key={notification.id} className="p-3 bg-blue-500/10 rounded-lg border border-blue-500/30">
+                      <div key={notification.id} className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-all duration-200">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <div className="flex items-center space-x-2 mb-1">
-                              <h4 className="font-semibold text-blue-400">{notification.title}</h4>
+                              <h4 className="font-semibold text-gray-900">{notification.title}</h4>
                               <Badge className={`text-xs ${
-                                notification.priority === 'urgent' ? 'bg-red-500 text-white' :
-                                notification.priority === 'high' ? 'bg-orange-500 text-white' :
-                                'bg-blue-500 text-white'
+                                notification.priority === 'urgent' ? 'bg-red-100 text-red-800 border-red-300' :
+                                notification.priority === 'high' ? 'bg-orange-100 text-orange-800 border-orange-300' :
+                                'bg-blue-100 text-blue-800 border-blue-300'
                               }`}>
                                 {notification.priority}
                               </Badge>
                             </div>
-                            <p className="text-gray-300 text-sm mb-2 line-clamp-2">{notification.message}</p>
-                            <div className="flex items-center space-x-4 text-xs text-gray-400">
+                            <p className="text-gray-600 text-sm mb-2 line-clamp-2">{notification.message}</p>
+                            <div className="flex items-center space-x-4 text-xs text-gray-500">
                               <span>
                                 {new Date(notification.created_at).toLocaleDateString("en-AU", {
                                   weekday: "short",
@@ -1810,11 +1882,11 @@ export default function AdminDashboard() {
                                 {notification.user_name || 'All Users'}
                               </span>
                               <Badge className={`text-xs ${
-                                notification.type === 'announcement' ? 'bg-purple-100 text-purple-800' :
-                                notification.type === 'warning' ? 'bg-yellow-100 text-yellow-800' :
-                                notification.type === 'success' ? 'bg-green-100 text-green-800' :
-                                notification.type === 'error' ? 'bg-red-100 text-red-800' :
-                                'bg-blue-100 text-blue-800'
+                                notification.type === 'announcement' ? 'bg-purple-100 text-purple-800 border-purple-300' :
+                                notification.type === 'warning' ? 'bg-yellow-100 text-yellow-800 border-yellow-300' :
+                                notification.type === 'success' ? 'bg-green-100 text-green-800 border-green-300' :
+                                notification.type === 'error' ? 'bg-red-100 text-red-800 border-red-300' :
+                                'bg-blue-100 text-blue-800 border-blue-300'
                               }`}>
                                 {notification.type}
                               </Badge>
@@ -1830,32 +1902,37 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="billing" className="space-y-6">
-            <h2 className="text-2xl font-bold text-white">Billing & Transactions</h2>
+            <h2 className="text-3xl font-bold text-blue-900">Billing & Transactions</h2>
             
-            <Card className="bg-slate-800/50 border-amber-500/30">
+            <Card className="bg-white shadow-md">
               <CardHeader>
-                <CardTitle className="text-white">Recent Transactions</CardTitle>
+                <CardTitle className="text-blue-900 flex items-center">
+                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                    <DollarSign className="h-6 w-6 text-green-600" />
+                  </div>
+                  Recent Transactions
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 {billingTransactions.length === 0 ? (
-                  <div className="text-center py-8 text-gray-400">
-                    <DollarSign className="h-12 w-12 mx-auto mb-3" />
+                  <div className="text-center py-8 text-gray-500">
+                    <DollarSign className="h-12 w-12 mx-auto mb-3 opacity-50" />
                     <p>No recent transactions</p>
                     <p className="text-sm">Payment transactions will appear here</p>
                   </div>
                 ) : (
                   <div className="space-y-4">
                     {billingTransactions.slice(0, 10).map((transaction) => (
-                      <div key={transaction.id} className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
+                      <div key={transaction.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                         <div>
-                          <p className="font-medium text-white">{transaction.user?.firstName} {transaction.user?.lastName}</p>
-                          <p className="text-sm text-gray-300">{transaction.user?.email}</p>
-                          <p className="text-xs text-gray-400">{transaction.paymentReference}</p>
+                          <p className="font-medium text-gray-900">{transaction.user?.firstName} {transaction.user?.lastName}</p>
+                          <p className="text-sm text-gray-600">{transaction.user?.email}</p>
+                          <p className="text-xs text-gray-500">{transaction.paymentReference}</p>
                         </div>
                         <div className="text-right">
-                          <p className="font-medium text-white">S${transaction.amount}</p>
-                          <p className="text-sm text-gray-300">{transaction.paymentMethod}</p>
-                          <p className="text-xs text-gray-400">{new Date(transaction.createdAt).toLocaleDateString()}</p>
+                          <p className="font-medium text-gray-900">S${transaction.amount}</p>
+                          <p className="text-sm text-gray-600">{transaction.paymentMethod}</p>
+                          <p className="text-xs text-gray-500">{new Date(transaction.createdAt).toLocaleDateString()}</p>
                         </div>
                       </div>
                     ))}
@@ -1866,16 +1943,18 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="settings" className="space-y-6">
-            <h2 className="text-2xl font-bold text-white">Admin Settings</h2>
+            <h2 className="text-3xl font-bold text-blue-900">Admin Settings</h2>
             
             {/* Admin Profile Management */}
-            <Card className="bg-slate-800/50 border-amber-500/30">
+            <Card className="bg-white shadow-md">
               <CardHeader>
-                <CardTitle className="text-white flex items-center">
-                  <User className="h-5 w-5 mr-2 text-amber-400" />
+                <CardTitle className="text-blue-900 flex items-center">
+                  <div className="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center mr-3">
+                    <User className="h-6 w-6 text-amber-600" />
+                  </div>
                   Admin Profile Management
                 </CardTitle>
-                <CardDescription className="text-gray-300">
+                <CardDescription className="text-gray-600">
                   Update your admin account email and password
                 </CardDescription>
               </CardHeader>
@@ -1898,31 +1977,38 @@ export default function AdminDashboard() {
                   </Button>
                 </div>
                 
-                <div className="bg-slate-700/50 rounded-lg p-4">
+                <div className="border border-gray-200 rounded-lg p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-medium text-white">Current Admin Email</p>
-                      <p className="text-sm text-gray-300">{user?.email}</p>
+                      <p className="font-medium text-gray-900">Current Admin Email</p>
+                      <p className="text-sm text-gray-600">{user?.email}</p>
                     </div>
-                    <Shield className="h-5 w-5 text-amber-400" />
+                    <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
+                      <Shield className="h-5 w-5 text-amber-600" />
+                    </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
             
             {/* System Settings */}
-            <Card className="bg-slate-800/50 border-amber-500/30">
+            <Card className="bg-white shadow-md">
               <CardHeader>
-                <CardTitle className="text-white">System Configuration</CardTitle>
-                <CardDescription className="text-gray-300">
+                <CardTitle className="text-blue-900 flex items-center">
+                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                    <Settings className="h-6 w-6 text-green-600" />
+                  </div>
+                  System Configuration
+                </CardTitle>
+                <CardDescription className="text-gray-600">
                   Configure system-wide settings and preferences
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
+                <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                   <div>
-                    <p className="font-medium text-white">System Status</p>
-                    <p className="text-sm text-gray-300">All systems operational</p>
+                    <p className="font-medium text-gray-900">System Status</p>
+                    <p className="text-sm text-gray-600">All systems operational</p>
                   </div>
                   <Badge className="bg-green-100 text-green-800 border-green-300">
                     <CheckCircle className="h-3 w-3 mr-1" />
@@ -1930,10 +2016,10 @@ export default function AdminDashboard() {
                   </Badge>
                 </div>
                 
-                <div className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
+                <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                   <div>
-                    <p className="font-medium text-white">Database</p>
-                    <p className="text-sm text-gray-300">Connected and synchronized</p>
+                    <p className="font-medium text-gray-900">Database</p>
+                    <p className="text-sm text-gray-600">Connected and synchronized</p>
                   </div>
                   <Badge className="bg-green-100 text-green-800 border-green-300">
                     <CheckCircle className="h-3 w-3 mr-1" />
@@ -1941,10 +2027,10 @@ export default function AdminDashboard() {
                   </Badge>
                 </div>
                 
-                <div className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
+                <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                   <div>
-                    <p className="font-medium text-white">Payment Processing</p>
-                    <p className="text-sm text-gray-300">Payment gateway active</p>
+                    <p className="font-medium text-gray-900">Payment Processing</p>
+                    <p className="text-sm text-gray-600">Payment gateway active</p>
                   </div>
                   <Badge className="bg-green-100 text-green-800 border-green-300">
                     <CheckCircle className="h-3 w-3 mr-1" />

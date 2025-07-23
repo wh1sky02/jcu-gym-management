@@ -43,8 +43,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const checkCookieAuth = async () => {
     try {
-      // Try to fetch user data using cookie authentication
+      // Check if we have a token in localStorage first
+      const token = localStorage.getItem("auth-token")
+      
+      const headers: HeadersInit = {
+        'credentials': 'include'
+      }
+      
+      // If we have a token, send it in Authorization header
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`
+      }
+      
+      // Try to fetch user data using either cookie or header authentication
       const response = await fetch("/api/auth/me", {
+        headers,
         credentials: 'include' // Include cookies in request
       })
       
@@ -53,9 +66,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(userData.user)
         // Also store in localStorage for faster subsequent loads
         localStorage.setItem("user-data", JSON.stringify(userData.user))
+        // Update the token in localStorage if we got it from cookie
+        if (!token && userData.token) {
+          localStorage.setItem("auth-token", userData.token)
+        }
       }
     } catch (error) {
-      console.log("Cookie auth check failed:", error)
+      console.log("Auth check failed:", error)
     }
   }
 

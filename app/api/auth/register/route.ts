@@ -196,18 +196,24 @@ export async function POST(request: NextRequest) {
       })
 
       // Create billing transaction record
-      // const transactionId = randomUUID()
-      // TODO: Implement createBillingTransaction method
-      // db.createBillingTransaction({
-      //   id: transactionId,
-      //   userId: userId,
-      //   amount: pricing.amount,
-      //   paymentMethod,
-      //   paymentReference,
-      //   transactionType: 'payment',
-      //   description: `${membershipType} membership registration`,
-      //   status: 'pending' // Will be updated when payment is confirmed
-      // })
+      const transactionId = randomUUID()
+      await db.executeQuery(`
+        INSERT INTO billing_transactions (
+          id, user_id, transaction_type, amount, currency, payment_method,
+          payment_reference, description, status, created_at
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      `, [
+        transactionId,
+        userId,
+        'payment',
+        pricing.amount,
+        'SGD',
+        paymentMethod,
+        paymentReference,
+        `${membershipType} membership registration`,
+        'pending',
+        new Date().toISOString()
+      ])
 
       return NextResponse.json({
         success: true,

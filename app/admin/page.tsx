@@ -29,18 +29,18 @@ export default function AdminPage() {
   // Show loading screen while auth is initializing
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-400 mx-auto mb-4"></div>
-          <p className="text-white text-xl">Loading admin panel...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-900 text-xl font-medium">Loading admin panel...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 flex items-center justify-center">
-      <div className="text-white text-xl">Redirecting to admin dashboard...</div>
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="text-gray-900 text-xl font-medium">Redirecting to admin dashboard...</div>
     </div>
   )
 }

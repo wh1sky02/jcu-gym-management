@@ -78,7 +78,28 @@ export async function PUT(request: NextRequest) {
       )
     }
 
+    if (!updates || typeof updates !== 'object') {
+      return NextResponse.json(
+        { error: "Updates object is required" },
+        { status: 400 }
+      )
+    }
+
     const db = getDatabaseAdapter()
+
+    // If email is being updated, check if it's already taken
+    if (updates.email !== undefined) {
+      const existingUser = await db.executeQuery(
+        'SELECT id FROM users WHERE email = $1 AND id != $2',
+        [updates.email, userId]
+      )
+      if (existingUser.length > 0) {
+        return NextResponse.json(
+          { error: "Email is already taken by another user" },
+          { status: 400 }
+        )
+      }
+    }
 
     // Update user in database
     const updateFields = []
@@ -96,6 +117,10 @@ export async function PUT(request: NextRequest) {
       updateFields.push('membership_type = ?')
       params.push(updates.membershipType)
     }
+    if (updates.membership_type !== undefined) {
+      updateFields.push('membership_type = ?')
+      params.push(updates.membership_type)
+    }
     if (updates.points !== undefined) {
       updateFields.push('points = ?')
       params.push(updates.points)
@@ -104,26 +129,66 @@ export async function PUT(request: NextRequest) {
       updateFields.push('suspension_count = ?')
       params.push(updates.suspensionCount)
     }
+    if (updates.first_name !== undefined) {
+      updateFields.push('first_name = ?')
+      params.push(updates.first_name)
+    }
+    if (updates.last_name !== undefined) {
+      updateFields.push('last_name = ?')
+      params.push(updates.last_name)
+    }
+    if (updates.email !== undefined) {
+      updateFields.push('email = ?')
+      params.push(updates.email)
+    }
+    if (updates.student_id !== undefined) {
+      updateFields.push('student_id = ?')
+      params.push(updates.student_id)
+    }
+    if (updates.phone !== undefined) {
+      updateFields.push('phone = ?')
+      params.push(updates.phone)
+    }
 
     if (updateFields.length === 0) {
+      console.log('No valid updates provided. Received updates:', updates)
       return NextResponse.json(
         { error: "No valid updates provided" },
         { status: 400 }
       )
     }
 
-    updateFields.push('updated_at = CURRENT_TIMESTAMP')
-
-    // Use cloud database method with proper parameter indexing
-    const paramIndexes = updateFields.map((_, index) => `$${index + 1}`).join(', ')
-    const finalQuery = `UPDATE users SET ${updateFields.map((field, index) => field.replace('?', `$${index + 1}`)).join(', ')} WHERE id = $${updateFields.length + 1}`
+    // Convert ? placeholders to $ placeholders for PostgreSQL
+    const convertedFields = updateFields.map((field, index) => field.replace('?', `$${index + 1}`))
     
+    // Add timestamp update (no parameter needed)
+    convertedFields.push('updated_at = CURRENT_TIMESTAMP')
+    
+    // Add userId parameter for WHERE clause
     params.push(userId)
+    
+    // Build final query - userId is at position after all update parameters
+    const finalQuery = `UPDATE users SET ${convertedFields.join(', ')} WHERE id = $${params.length}`
+    
+    console.log('Executing query:', finalQuery)
+    console.log('With parameters:', params)
+    
     await db.executeQuery(finalQuery, params)
 
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error("Error updating user:", error)
+    
+    // Check if it's a database constraint error
+    if (error instanceof Error) {
+      if (error.message.includes('duplicate key') || error.message.includes('unique constraint')) {
+        return NextResponse.json(
+          { error: "Email or student ID already exists" },
+          { status: 400 }
+        )
+      }
+    }
+    
     return NextResponse.json(
       { error: "Failed to update user" },
       { status: 500 }

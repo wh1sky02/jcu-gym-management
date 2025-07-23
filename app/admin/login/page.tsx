@@ -58,23 +58,22 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background Pattern */}
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 relative">
+      {/* Subtle Pattern */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 opacity-20">
+        <div className="absolute inset-0 opacity-10">
           <svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
             <g fill="none" fillRule="evenodd">
-              <g fill="#ffffff" fillOpacity="0.05">
+              <g fill="#3b82f6" fillOpacity="0.1">
                 <circle cx="30" cy="30" r="2"/>
               </g>
             </g>
           </svg>
         </div>
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-900/20 to-transparent"></div>
       </div>
 
-      {/* Admin Crown Icon */}
-      <div className="absolute top-10 right-10 w-16 h-16 bg-gradient-to-br from-amber-500 to-yellow-600 rounded-full flex items-center justify-center shadow-2xl opacity-80">
+      {/* Admin Shield Icon */}
+      <div className="absolute top-10 right-10 w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center shadow-lg">
         <Crown className="h-8 w-8 text-white" />
       </div>
 
@@ -83,7 +82,7 @@ export default function AdminLoginPage() {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-6">
             {/* JCU Official Logo */}
-            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-xl mr-4 p-2">
+            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg mr-4 p-2 border border-gray-200">
               <svg viewBox="0 0 200 150" className="w-full h-full">
                 {/* JCU Logo Recreation */}
                 <defs>
@@ -110,39 +109,41 @@ export default function AdminLoginPage() {
                 <text x="20" y="45" fontSize="24" fontWeight="bold" fill="#1F2937">JCU</text>
               </svg>
             </div>
-            <div className="w-20 h-20 bg-gradient-to-br from-slate-700 to-slate-800 rounded-full flex items-center justify-center shadow-2xl mr-4 border-2 border-amber-500">
-              <Shield className="h-10 w-10 text-amber-400" />
+            <div className="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center shadow-lg mr-4 border-2 border-blue-700">
+              <Shield className="h-10 w-10 text-white" />
             </div>
             <div className="text-left">
-              <h1 className="text-2xl font-bold text-white">ADMIN</h1>
-              <h2 className="text-xl font-bold text-amber-400">CONTROL PANEL</h2>
-              <p className="text-gray-300 font-semibold text-sm">JCU FITNESS CENTER</p>
+              <h1 className="text-2xl font-bold text-blue-900">ADMIN</h1>
+              <h2 className="text-xl font-bold text-blue-600">CONTROL PANEL</h2>
+              <p className="text-gray-600 font-semibold text-sm">JCU FITNESS CENTER</p>
             </div>
           </div>
-          <div className="w-full h-1 bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 rounded-full mb-2"></div>
+          <div className="w-full h-1 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 rounded-full mb-2"></div>
           <div className="flex justify-center space-x-2 mb-4">
-            <div className="w-8 h-1 bg-amber-500 rounded-full"></div>
-            <div className="w-8 h-1 bg-yellow-500 rounded-full"></div>
-            <div className="w-8 h-1 bg-amber-600 rounded-full"></div>
+            <div className="w-8 h-1 bg-blue-500 rounded-full"></div>
+            <div className="w-8 h-1 bg-blue-600 rounded-full"></div>
+            <div className="w-8 h-1 bg-blue-700 rounded-full"></div>
           </div>
-          <h3 className="text-xl font-bold text-white mb-2">System Administration</h3>
-          <p className="text-gray-300 font-medium">Authorized Personnel Only</p>
+          <h3 className="text-xl font-bold text-blue-900 mb-2">System Administration</h3>
+          <p className="text-gray-600 font-medium">Authorized Personnel Only</p>
         </div>
 
-        <Card className="bg-slate-800/95 backdrop-blur-lg shadow-2xl border border-amber-500/50">
-          <CardHeader className="space-y-1 text-center bg-gradient-to-r from-slate-700 to-slate-800 text-white rounded-t-lg border-b border-amber-500/30">
+        <Card className="bg-white shadow-xl border border-gray-200">
+          <CardHeader className="space-y-1 text-center bg-white text-blue-900 rounded-t-lg border-b border-gray-200">
             <div className="flex items-center justify-center mb-3">
-              <Settings className="h-8 w-8 text-amber-400" />
+              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Settings className="h-6 w-6 text-blue-600" />
+              </div>
             </div>
-            <CardTitle className="text-2xl font-bold text-white">Administrator Access</CardTitle>
-            <CardDescription className="text-gray-300">
+            <CardTitle className="text-2xl font-bold text-blue-900">Administrator Access</CardTitle>
+            <CardDescription className="text-gray-600">
               Enter your admin credentials to continue
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6 p-6">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-white font-semibold">Admin Email</Label>
+                <Label htmlFor="email" className="text-gray-700 font-semibold">Admin Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -150,11 +151,11 @@ export default function AdminLoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="border-amber-500/50 focus:border-amber-400 focus:ring-amber-400 bg-slate-900/50 text-white placeholder-gray-400"
+                  className="border-gray-300 focus:border-blue-500 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-500"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-white font-semibold">Password</Label>
+                <Label htmlFor="password" className="text-gray-700 font-semibold">Password</Label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -163,33 +164,33 @@ export default function AdminLoginPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="border-amber-500/50 focus:border-amber-400 focus:ring-amber-400 bg-slate-900/50 text-white placeholder-gray-400 pr-10"
+                    className="border-gray-300 focus:border-blue-500 focus:ring-blue-500 bg-white text-gray-900 placeholder-gray-500 pr-10"
                   />
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-gray-50"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-4 w-4 text-amber-400" />
+                      <EyeOff className="h-4 w-4 text-blue-600" />
                     ) : (
-                      <Eye className="h-4 w-4 text-amber-400" />
+                      <Eye className="h-4 w-4 text-blue-600" />
                     )}
                   </Button>
                 </div>
               </div>
 
               {error && (
-                <Alert className="border-red-500 bg-red-900/50">
-                  <AlertDescription className="text-red-300">{error}</AlertDescription>
+                <Alert className="border-red-300 bg-red-50">
+                  <AlertDescription className="text-red-600">{error}</AlertDescription>
                 </Alert>
               )}
 
               <Button 
                 type="submit" 
-                className="w-full bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-700 hover:to-yellow-700 text-white h-12 font-semibold text-lg shadow-lg"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white h-12 font-semibold text-lg shadow-md"
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -207,7 +208,7 @@ export default function AdminLoginPage() {
             </form>
 
             <div className="text-center space-y-2">
-              <p className="text-sm text-amber-600">
+              <p className="text-sm text-gray-600">
                 Student?{" "}
                 <Link href="/auth/login" className="font-semibold text-blue-600 hover:text-blue-700 underline">
                   Student Portal
@@ -218,7 +219,7 @@ export default function AdminLoginPage() {
         </Card>
 
         {/* Footer */}
-        <div className="text-center mt-8 text-gray-400">
+        <div className="text-center mt-8 text-gray-500">
           <p className="text-sm font-medium">© {new Date().getFullYear()} James Cook University Singapore</p>
           <p className="text-xs">Administrative Access Portal</p>
         </div>

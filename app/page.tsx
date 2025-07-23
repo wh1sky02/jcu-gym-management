@@ -109,7 +109,7 @@ export default function HomePage() {
                 onClick={() => router.push("/auth/register")}
                 className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-lg h-14 px-8 shadow-md"
               >
-                Start Your Journey
+                Get Started
               </Button>
               <Button 
                 size="lg"
@@ -117,7 +117,7 @@ export default function HomePage() {
                 onClick={() => router.push("/auth/login")}
                 className="border-blue-300 text-blue-700 hover:bg-blue-50 h-14 px-8 font-semibold"
               >
-                Student Login
+                Login
               </Button>
             </div>
 
@@ -175,6 +175,39 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* 360° Virtual Tour Section */}
+      <section className="bg-gray-50 py-16">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-blue-900 mb-4">Experience Our Facility</h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">Take a 360° virtual tour of our state-of-the-art fitness center before your visit</p>
+          </div>
+          
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+              <div className="relative">
+                <iframe
+                  src="https://360.theredmarker.com/F15d4Yv3wl/36142220p&93.94h&101.62t"
+                  width="100%"
+                  height="500"
+                  frameBorder="0"
+                  allowFullScreen
+                  className="w-full"
+                  title="JCU Singapore Fitness Center 360° Virtual Tour"
+                />
+                <div className="absolute top-4 left-4 bg-blue-900 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                  360° Virtual Tour
+                </div>
+              </div>
+              <div className="p-6">
+                <h3 className="text-xl font-bold text-blue-900 mb-2">Explore Our Fitness Center</h3>
+                <p className="text-gray-600">Use your mouse to navigate around and explore our modern gym equipment, spacious workout areas, and premium facilities.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section className="bg-white py-16">
         <div className="container mx-auto px-6">
@@ -228,13 +261,6 @@ export default function HomePage() {
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">Join the JCU Singapore Fitness Center today and transform your fitness journey with our state-of-the-art facilities.</p>
-          <Button
-            size="lg"
-            onClick={() => router.push("/auth/register")}
-            className="bg-white text-blue-900 hover:bg-gray-100 font-bold text-lg px-8 py-3"
-          >
-            Register Now
-          </Button>
         </div>
       </section>
 

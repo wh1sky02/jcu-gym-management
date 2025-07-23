@@ -31,7 +31,7 @@ This guide will help you set up your own Neon database for the JCU Gym Managemen
 ## 4. Update Environment Variables
 
 1. Open `.env.local` in your project
-2. Replace the old Supabase values with your Neon credentials:
+2. Replace the old database values with your Neon credentials:
 
 ```env
 # Replace with your Neon values
@@ -43,7 +43,7 @@ DATABASE_URL=postgres://[USER]:[PASSWORD]@[HOST]/[DATABASE]?sslmode=require
 1. Connect to your database using the connection string
 2. Run the schema file:
 ```bash
-psql "your-connection-string" < supabase-schema.sql
+psql "your-connection-string" < neon-schema.sql
 ```
 
 ## 6. Test Connection
